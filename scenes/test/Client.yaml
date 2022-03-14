@@ -1,0 +1,22 @@
+- yas-grpc~call:
+    title: Test gRPC call
+    proto: ../../proto/server.proto'
+    protoOptions: 
+      keepCase: true,
+      longs: String,
+      enums: String,
+      defaults: true,
+      oneofs: true
+    package: user
+    service: UserService
+    method: GetUsers
+    address: 0.0.0.0:5000
+    request: {
+      "name": "thanh"
+    }
+    timeout: 1s
+    validate:
+      - title: Response is valid
+        chai: \${expect(_.response.code).to.equal(1)}
+
+- !fragment ./Doc.yaml

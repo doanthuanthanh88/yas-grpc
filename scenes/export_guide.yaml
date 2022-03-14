@@ -1,4 +1,4 @@
-- Doc~CommentGuide: 
+- Doc~GuideMD: 
     logLevel: debug
     includes: 
       - ../src

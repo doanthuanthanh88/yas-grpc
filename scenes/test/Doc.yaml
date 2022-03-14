@@ -1,0 +1,5 @@
+- yas-grpc~doc:
+    title: User gRPC Service
+    description: Demo CRUD API to generate to markdown document
+    signature: "[Doan Thuan Thanh](mailto:doanthuanthanh88@gmail.com)"
+    outFile: ${join(__dirname, 'api_document_details.md')}

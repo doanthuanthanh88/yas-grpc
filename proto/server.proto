@@ -1,0 +1,21 @@
+syntax = "proto3";
+
+package user;
+
+service UserService {
+  rpc GetUsers(UserInput) returns (ResponseUser);
+}
+
+message ResponseUser {
+  optional int32 code = 1;
+  repeated User data = 2;
+}
+
+message UserInput {
+  string name = 1;
+}
+
+message User {
+  string name = 1;
+  int32 age = 2;
+}
