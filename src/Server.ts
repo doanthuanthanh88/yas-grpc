@@ -1,21 +1,21 @@
 import { ChannelOptions, loadPackageDefinition, Server as GRPCServer, ServerCredentials } from '@grpc/grpc-js'
 import { loadSync } from '@grpc/proto-loader'
 import chalk from "chalk"
-import { merge } from "lodash"
+import merge from "lodash.merge"
 import { ElementFactory } from 'yaml-scene/src/elements/ElementFactory'
 import { ElementProxy } from "yaml-scene/src/elements/ElementProxy"
 import { IElement } from "yaml-scene/src/elements/IElement"
 import { TimeUtils } from "yaml-scene/src/utils/time"
 
 /**
- * yas-grpc~serve
+ * yas-grpc/Server
  * @description Create a gRPC server to mock data
  * @order 2
  * @group gRPC
  * @exampleType custom
  * @example
 ```yaml
-- yas-grpc~serve
+- yas-grpc/Server
     title: Server to serve list users
     description: Test on dev environment        
     channelOptions:                                 # gRPC Server options
@@ -24,7 +24,7 @@ import { TimeUtils } from "yaml-scene/src/utils/time"
 
     packages:                                       # Declare packages in proto file
       user:                                         # Package name
-        proto: ./proto/server.proto'                # File proto
+        proto: ./proto/server.proto                 # File proto
 
         protoOptions:                               # Protobuf options
 
@@ -76,7 +76,7 @@ import { TimeUtils } from "yaml-scene/src/utils/time"
 </details>
 
  */
-export class Server implements IElement {
+export default class Server implements IElement {
   proxy: ElementProxy<Server>
 
   title: string

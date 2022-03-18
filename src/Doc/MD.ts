@@ -1,25 +1,25 @@
 import { FileDataSource } from "yaml-scene/src/utils/data-source/file/FileDataSource"
 import { TimeUtils } from "yaml-scene/src/utils/time"
-import { merge } from "lodash"
+import merge from "lodash.merge"
 import { ElementProxy } from "yaml-scene/src/elements/ElementProxy"
 import { Exporter } from "./Exporter"
-import { Client } from "@app/Client"
+import Call from "@app/Call"
 
 /**
- * yas-grpc~doc
- * @description Document all of yas-grpc~call which got "props.doc" is true
+ * yas-grpc/Doc/MD
+ * @description Document all of yas-grpc/Call which got "props.doc" is true
  * @group gRPC
  * @example
-- yas-grpc~doc:
+- yas-grpc/Doc/MD:
     title: Post service
     description: Demo CRUD API to generate to markdown document
     signature: "[Doan Thuan Thanh](mailto:doanthuanthanh88@gmail.com)"
     outFile: ./grpc_document_details.md
 
  */
-export class DocMD {
-  proxy: ElementProxy<DocMD>
-  calls: Client[]
+export default class MD {
+  proxy: ElementProxy<MD>
+  calls: Call[]
 
   title: string
   description: string
@@ -35,7 +35,7 @@ export class DocMD {
     if (!props.outFile) throw new Error(`"outFile" is required in ${this.constructor.name}`)
     merge(this, props)
     this.proxy.scenario.events
-      .on('gRPC-call.done', (isPassed: boolean, call: Client) => {
+      .on('gRPC-call.done', (isPassed: boolean, call: Call) => {
         if (isPassed && !!call.doc) {
           this.calls.push(call)
         }

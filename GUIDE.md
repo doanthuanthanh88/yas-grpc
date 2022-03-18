@@ -3,22 +3,22 @@
 | Element | Description |  
 |---|---|  
 | GRPC | --- |
-|[yas-grpc~call](#yas-grpc~call)| Make a gGPC call to another|  
-|[yas-grpc~serve](#yas-grpc~serve)| Create a gRPC server to mock data|  
-|[yas-grpc~doc](#yas-grpc~doc)| Document all of yas-grpc~call which got "props.doc" is true|  
+|[yas-grpc/Call](#yas-grpc/Call)| Make a gGPC call to another ...|  
+|[yas-grpc/Server](#yas-grpc/Server)| Create a gRPC server to mock data ...|  
+|[yas-grpc/Doc/MD](#yas-grpc/Doc/MD)| Document all of yas-grpc/Call which got "props.doc" is true ...|  
   
   
 # Details
-## yas-grpc~call <a name="yas-grpc~call"></a>
+## yas-grpc/Call <a name="yas-grpc/Call"></a>
 Make a gGPC call to another  
 ```yaml
-- yas-grpc~call
+- yas-grpc/Call
     title: Get list users which filter by name
     description: Test on dev environment        
-    channelOptions:                                 # gRPC Client options
-    doc: true                                       # Document it
+    channelOptions:                                 # gRPC Call options
+    doc: true                                       # Document it. Reference to "yas-grpc/Doc/MD"
 
-    proto: ./proto/server.proto'                    # File proto
+    proto: ./proto/server.proto                     # File proto
 
     protoOptions:                                   # Protobuf options
 
@@ -77,10 +77,10 @@ Make a gGPC call to another
 </details>
 
 
-## yas-grpc~serve <a name="yas-grpc~serve"></a>
+## yas-grpc/Server <a name="yas-grpc/Server"></a>
 Create a gRPC server to mock data  
 ```yaml
-- yas-grpc~serve
+- yas-grpc/Server
     title: Server to serve list users
     description: Test on dev environment        
     channelOptions:                                 # gRPC Server options
@@ -89,7 +89,7 @@ Create a gRPC server to mock data
 
     packages:                                       # Declare packages in proto file
       user:                                         # Package name
-        proto: ./proto/server.proto'                # File proto
+        proto: ./proto/server.proto                 # File proto
 
         protoOptions:                               # Protobuf options
 
@@ -141,11 +141,11 @@ Create a gRPC server to mock data
 </details>
 
 
-## yas-grpc~doc <a name="yas-grpc~doc"></a>
-Document all of yas-grpc~call which got "props.doc" is true  
+## yas-grpc/Doc/MD <a name="yas-grpc/Doc/MD"></a>
+Document all of yas-grpc/Call which got "props.doc" is true  
 
 ```yaml
-- yas-grpc~doc:
+- yas-grpc/Doc/MD:
     title: Post service
     description: Demo CRUD API to generate to markdown document
     signature: "[Doan Thuan Thanh](mailto:doanthuanthanh88@gmail.com)"

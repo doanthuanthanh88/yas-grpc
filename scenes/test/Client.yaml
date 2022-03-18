@@ -1,6 +1,7 @@
-- yas-grpc~call:
+- yas-grpc/Call:
     title: Test gRPC call
-    proto: ../../proto/server.proto'
+    proto: ../../proto/server.proto
+    doc: true
     protoOptions: 
       keepCase: true,
       longs: String,

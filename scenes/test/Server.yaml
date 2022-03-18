@@ -1,9 +1,9 @@
-- yas-grpc~serve:
+- yas-grpc/Server:
     title: Start mock gRPC server
     address: 0.0.0.0:5000
     packages:
       user:
-        proto: ../../proto/server.proto'
+        proto: ../../proto/server.proto
         protoOptions: 
           keepCase: true,
           longs: String,

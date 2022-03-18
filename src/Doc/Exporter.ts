@@ -3,12 +3,12 @@ import { basename } from 'path';
 import { escape } from 'querystring';
 import { DataSource } from 'yaml-scene/src/utils/data-source/DataSource';
 import { Exporter as IExporter } from 'yaml-scene/src/utils/doc/Exporter';
-import { DocMD } from '.';
-import { Client } from '../Client';
+import MD from './MD';
+import Call from '../Call';
 
-export class Exporter implements IExporter<Client> {
+export class Exporter implements IExporter<Call> {
 
-  constructor(private datasource: DataSource, public md: DocMD) {
+  constructor(private datasource: DataSource, public md: MD) {
   }
 
   objectToMDType(obj) {
@@ -67,7 +67,7 @@ export class Exporter implements IExporter<Client> {
     return []
   }
 
-  export(apis: Client[]) {
+  export(apis: Call[]) {
     const mdMenu = [`# ${this.md.title || this.md.proxy.scenario.title}`, `${this.md.description || this.md.proxy.scenario.description || ''}`];
     const mdDetails = [];
 

@@ -5,13 +5,8 @@
     "removeComments": true,
     "sourceMap": true,
     "resolveJsonModule": true,
-    "rootDirs": [
-      "src"
-    ]
+    "rootDir": "src"
   },
-  "files": [
-    "package.json"
-  ],
   "include": [
     "src"
   ]

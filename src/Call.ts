@@ -2,29 +2,29 @@ import { credentials, loadPackageDefinition, Metadata, ChannelOptions } from '@g
 import { ServiceClient } from '@grpc/grpc-js/build/src/make-client'
 import { loadSync, Options } from '@grpc/proto-loader'
 import chalk from "chalk"
-import { merge } from "lodash"
+import merge from "lodash.merge"
 import { ElementFactory } from "yaml-scene/src/elements/ElementFactory"
 import { ElementProxy } from "yaml-scene/src/elements/ElementProxy"
 import { IElement } from "yaml-scene/src/elements/IElement"
-import { Validate } from "yaml-scene/src/elements/Validate"
+import Validate from "yaml-scene/src/elements/Validate"
 import { LogLevel } from "yaml-scene/src/utils/logger/LogLevel"
 import { TimeUtils } from 'yaml-scene/src/utils/time'
 
 /**
- * yas-grpc~call
+ * yas-grpc/Call
  * @description Make a gGPC call to another
  * @order 1
  * @group gRPC
  * @exampleType custom
  * @example
 ```yaml
-- yas-grpc~call
+- yas-grpc/Call
     title: Get list users which filter by name
     description: Test on dev environment        
-    channelOptions:                                 # gRPC Client options
-    doc: true                                       # Document it
+    channelOptions:                                 # gRPC Call options
+    doc: true                                       # Document it. Reference to "yas-grpc/Doc/MD"
 
-    proto: ./proto/server.proto'                    # File proto
+    proto: ./proto/server.proto                     # File proto
 
     protoOptions:                                   # Protobuf options
 
@@ -83,8 +83,8 @@ import { TimeUtils } from 'yaml-scene/src/utils/time'
 </details>
 
  */
-export class Client implements IElement {
-  proxy: ElementProxy<Client>
+export default class Call implements IElement {
+  proxy: ElementProxy<Call>
   logLevel: any
 
   title: string

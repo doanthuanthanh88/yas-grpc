@@ -7,11 +7,11 @@ describe('Unit test gRPC Server', () => {
   test('Test gRPC client & mock server', async () => {
     await Simulator.Run(`
 extensions:
-  - ${require.resolve('../src')}
+  yas-grpc: ${join(__dirname, '../src')}
 steps:
   - Group: 
       steps:
-        - serve:
+        - yas-grpc/Server:
             async: true
             title: Start mock gRPC server
             address: 0.0.0.0:5000
@@ -31,7 +31,7 @@ steps:
                       code: 1,
                       data: [{name: 'thanh', age: 1}]
                     }
-        - call:
+        - yas-grpc/Call:
             async: true
             doc: true
             title: Test gRPC call
@@ -54,7 +54,7 @@ steps:
               - title: Response is valid
                 chai: \${expect(_.response.code).to.equal(1)}
 
-        - call:
+        - yas-grpc/Call:
             async: true
             title: This is not documented
             proto: ${join(__dirname, '../proto/server.proto')}
@@ -76,7 +76,7 @@ steps:
               - title: Response is valid
                 chai: \${expect(_.response.code).to.equal(1)}
 
-        - doc:
+        - yas-grpc/Doc/MD:
             title: User gRPC Service
             description: Demo CRUD API to generate to markdown document
             signature: "[Doan Thuan Thanh](mailto:doanthuanthanh88@gmail.com)"
@@ -87,6 +87,6 @@ steps:
     const cnt = readFileSync(`${join(__dirname, 'api_document_details.md')}`).toString()
     expect(cnt).toContain('Test gRPC call')
     expect(cnt).not.toContain('This is not documented')
-  })
+  }, 60000)
 
 })

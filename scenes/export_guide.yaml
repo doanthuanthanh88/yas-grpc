@@ -1,4 +1,4 @@
-- Doc~GuideMD: 
+- Doc/Guide/MD: 
     logLevel: debug
     includes: 
       - ../src
@@ -6,4 +6,4 @@
     includePattern: ".+\\.ts$"
     outFile: ../GUIDE.md
 
-- Echo~green: Guidline document generated successfully
+- Echo/Green: Guidline document generated successfully
