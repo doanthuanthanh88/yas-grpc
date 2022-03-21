@@ -1,12 +1,13 @@
-import { FileDataSource } from "yaml-scene/src/utils/data-source/file/FileDataSource"
 import { TimeUtils } from "yaml-scene/src/utils/time"
 import merge from "lodash.merge"
 import { ElementProxy } from "yaml-scene/src/elements/ElementProxy"
 import { Exporter } from "./Exporter"
 import Call from "@app/Call"
+import { File } from "yaml-scene/src/elements/File/adapter/File"
 
 /**
- * yas-grpc/Doc/MD
+ * @guide
+ * @name yas-grpc/Doc/MD
  * @description Document all of yas-grpc/Call which got "props.doc" is true
  * @group gRPC
  * @example
@@ -15,7 +16,7 @@ import Call from "@app/Call"
     description: Demo CRUD API to generate to markdown document
     signature: "[Doan Thuan Thanh](mailto:doanthuanthanh88@gmail.com)"
     outFile: ./grpc_document_details.md
-
+ * @end
  */
 export default class MD {
   proxy: ElementProxy<MD>
@@ -48,7 +49,7 @@ export default class MD {
 
   async exec() {
     await TimeUtils.Delay('1s')
-    const exporter = new Exporter(new FileDataSource(this.outFile), this)
+    const exporter = new Exporter(new File(this.outFile), this)
     exporter.export(this.calls.sort((a, b) => a.title > b.title ? 1 : -1))
     this.proxy.logger.info(`Document is generated at ${this.outFile}`)
   }

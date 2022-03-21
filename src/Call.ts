@@ -11,7 +11,8 @@ import { LogLevel } from "yaml-scene/src/utils/logger/LogLevel"
 import { TimeUtils } from 'yaml-scene/src/utils/time'
 
 /**
- * yas-grpc/Call
+ * @guide
+ * @name yas-grpc/Call
  * @description Make a gGPC call to another
  * @order 1
  * @group gRPC
@@ -81,7 +82,7 @@ import { TimeUtils } from 'yaml-scene/src/utils/time'
   - 'includeDirs': []
   - ...
 </details>
-
+ * @end
  */
 export default class Call implements IElement {
   proxy: ElementProxy<Call>
@@ -93,7 +94,9 @@ export default class Call implements IElement {
   channelOptions?: Partial<ChannelOptions>
   protoOptions?: Options
   proto: string
-  doc: boolean
+  doc: {
+    tags: string[]
+  }
 
   package: string
   service: string
@@ -132,8 +135,6 @@ export default class Call implements IElement {
         const _v = ElementFactory.CreateElement<Validate>('Validate', this.proxy.scenario)
         _v.changeLogLevel(this.logLevel)
         _v.init(v)
-        _v._ = this.proxy._
-        _v.__ = this.proxy.__
         return _v
       })
     })
@@ -147,9 +148,15 @@ export default class Call implements IElement {
     this.package = this.proxy.getVar(this.package)
     this.service = this.proxy.getVar(this.service)
     this.method = this.proxy.getVar(this.method)
+    this.proto = this.proxy.resolvePath(this.proto)
+    this.protoOptions?.includeDirs?.forEach((e, i) => this.protoOptions.includeDirs[i] = this.proxy.resolvePath(e))
     if (this.timeout) {
       this.timeout = TimeUtils.GetMsTime(this.timeout)
     }
+    this.validate?.forEach(v => {
+      v._ = this.proxy._
+      v.__ = this.proxy.__
+    })
     if (!this.#client) {
       const packageDefinition = loadSync(
         this.proto,
@@ -158,11 +165,6 @@ export default class Call implements IElement {
       const protoDescriptor = loadPackageDefinition(packageDefinition);
       const pack = protoDescriptor[this.package];
       this.#client = new pack[this.service](`${this.address}`, credentials.createInsecure(), this.channelOptions);
-
-      this.proto = this.proxy.resolvePath(this.proto)
-      if (this.protoOptions?.includeDirs) {
-        this.protoOptions.includeDirs = this.protoOptions.includeDirs.map(e => this.proxy.resolvePath(e))
-      }
     }
   }
 

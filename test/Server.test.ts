@@ -1,92 +1,54 @@
-import { existsSync, readFileSync } from "fs"
+import { Socket } from "net"
 import { join } from "path"
 import { Simulator } from "yaml-scene/src/Simulator"
 
-describe('Unit test gRPC Server', () => {
+function portIsUsed(host: string, port: number) {
+  return new Promise((resolve, reject) => {
+    const socket = new Socket()
+    socket.connect(port, host)
+    socket.on("connect", function () {
+      resolve(true);
+    });
+    socket.on("error", function (err) {
+      if (err['code'] !== "ECONNREFUSED") {
+        reject(false);
+      } else {
+        resolve(true);
+      }
+    });
+  })
+}
 
-  test('Test gRPC client & mock server', async () => {
+describe('gRPC', () => {
+
+  test('Test gRPC Server', async () => {
     await Simulator.Run(`
 extensions:
   yas-grpc: ${join(__dirname, '../src')}
 steps:
-  - Group: 
-      steps:
-        - yas-grpc/Server:
-            async: true
-            title: Start mock gRPC server
-            address: 0.0.0.0:5000
-            timeout: 3s
-            packages:
-              user:
-                proto: ${join(__dirname, '../proto/server.proto')}
-                protoOptions: 
-                  keepCase: true,
-                  longs: String,
-                  enums: String,
-                  defaults: true,
-                  oneofs: true
-                services:
-                  UserService:
-                    GetUsers: {
-                      code: 1,
-                      data: [{name: 'thanh', age: 1}]
-                    }
-        - yas-grpc/Call:
-            async: true
-            doc: true
-            title: Test gRPC call
-            proto: ${join(__dirname, '../proto/server.proto')}
-            protoOptions: 
-              keepCase: true,
-              longs: String,
-              enums: String,
-              defaults: true,
-              oneofs: true
-            package: user
-            service: UserService
-            method: GetUsers
-            address: 0.0.0.0:5000
-            request: {
-              "name": "thanh"
-            }
-            timeout: 1s
-            validate:
-              - title: Response is valid
-                chai: \${expect(_.response.code).to.equal(1)}
-
-        - yas-grpc/Call:
-            async: true
-            title: This is not documented
-            proto: ${join(__dirname, '../proto/server.proto')}
-            protoOptions: 
-              keepCase: true,
-              longs: String,
-              enums: String,
-              defaults: true,
-              oneofs: true
-            package: user
-            service: UserService
-            method: GetUsers
-            address: 0.0.0.0:5000
-            request: {
-              "name": "thanh"
-            }
-            timeout: 1s
-            validate:
-              - title: Response is valid
-                chai: \${expect(_.response.code).to.equal(1)}
-
-        - yas-grpc/Doc/MD:
-            title: User gRPC Service
-            description: Demo CRUD API to generate to markdown document
-            signature: "[Doan Thuan Thanh](mailto:doanthuanthanh88@gmail.com)"
-            outFile: ${join(__dirname, 'api_document_details.md')}
+  - yas-grpc/Server:
+      async: true
+      title: Start mock gRPC server
+      address: 0.0.0.0:5000
+      timeout: 5s
+      packages:
+        user:
+          proto: ${join(__dirname, '../proto/server.proto')}
+          protoOptions: 
+            keepCase: true
+            longs: String
+            enums: String
+            defaults: true
+            oneofs: true
+          services:
+            UserService:
+              GetUsers: {
+                code: 1,
+                data: [{name: 'thanh', age: 1}]
+              }
+  - Sleep: 1s
 `)
-
-    expect(existsSync(`${join(__dirname, 'api_document_details.md')}`)).toBe(true)
-    const cnt = readFileSync(`${join(__dirname, 'api_document_details.md')}`).toString()
-    expect(cnt).toContain('Test gRPC call')
-    expect(cnt).not.toContain('This is not documented')
+    expect(await portIsUsed('0.0.0.0', 5000)).toEqual(true)
   }, 60000)
 
 })

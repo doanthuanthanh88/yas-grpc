@@ -8,7 +8,8 @@ import { IElement } from "yaml-scene/src/elements/IElement"
 import { TimeUtils } from "yaml-scene/src/utils/time"
 
 /**
- * yas-grpc/Server
+ * @guide 
+ * @name yas-grpc/Server
  * @description Create a gRPC server to mock data
  * @order 2
  * @group gRPC
@@ -74,7 +75,7 @@ import { TimeUtils } from "yaml-scene/src/utils/time"
   - 'includeDirs': []
   - ...
 </details>
-
+ * @end
  */
 export default class Server implements IElement {
   proxy: ElementProxy<Server>
@@ -121,9 +122,7 @@ export default class Server implements IElement {
       const packageConfig = this.packages[packageName]
       // Suggested options for similarity to existing grpc.load behavior
       packageConfig.proto = this.proxy.resolvePath(packageConfig.proto)
-      if (packageConfig.protoOptions?.includeDirs) {
-        packageConfig.protoOptions.includeDirs = packageConfig.protoOptions.includeDirs.map(e => this.proxy.resolvePath(e))
-      }
+      packageConfig.protoOptions?.includeDirs?.forEach((e, i) => packageConfig.protoOptions.includeDirs[i] = this.proxy.resolvePath(e))
       const packageDefinition = loadSync(
         packageConfig.proto,
         merge({
@@ -183,7 +182,7 @@ export default class Server implements IElement {
           title: `Enter to stop the gRPC service "${this.title || ''}" !`,
           time: this.timeout
         })
-        pause.prepare()
+        await pause.prepare()
         await pause.exec()
         resolve(undefined)
       })

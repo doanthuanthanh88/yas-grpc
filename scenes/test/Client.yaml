@@ -1,12 +1,15 @@
+extensions:
+  yas-grpc: ../../dist
+steps:
 - yas-grpc/Call:
     title: Test gRPC call
     proto: ../../proto/server.proto
     doc: true
     protoOptions: 
-      keepCase: true,
-      longs: String,
-      enums: String,
-      defaults: true,
+      keepCase: true
+      longs: String
+      enums: String
+      defaults: true
       oneofs: true
     package: user
     service: UserService

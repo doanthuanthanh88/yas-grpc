@@ -76,7 +76,6 @@ Make a gGPC call to another
   - ...
 </details>
 
-
 ## yas-grpc/Server <a name="yas-grpc/Server"></a>
 Create a gRPC server to mock data  
 ```yaml
@@ -140,7 +139,6 @@ Create a gRPC server to mock data
   - ...
 </details>
 
-
 ## yas-grpc/Doc/MD <a name="yas-grpc/Doc/MD"></a>
 Document all of yas-grpc/Call which got "props.doc" is true  
 
@@ -150,7 +148,6 @@ Document all of yas-grpc/Call which got "props.doc" is true
     description: Demo CRUD API to generate to markdown document
     signature: "[Doan Thuan Thanh](mailto:doanthuanthanh88@gmail.com)"
     outFile: ./grpc_document_details.md
-
 ```
 
 

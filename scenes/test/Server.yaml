@@ -1,3 +1,6 @@
+extensions:
+  yas-grpc: ../../dist
+steps:
 - yas-grpc/Server:
     title: Start mock gRPC server
     address: 0.0.0.0:5000
@@ -5,10 +8,10 @@
       user:
         proto: ../../proto/server.proto
         protoOptions: 
-          keepCase: true,
-          longs: String,
-          enums: String,
-          defaults: true,
+          keepCase: true
+          longs: String
+          enums: String
+          defaults: true
           oneofs: true
         services:
           UserService:
