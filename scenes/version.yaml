@@ -26,7 +26,7 @@
     if: ${ok}
     logLevel: debug
     content: |
-      git checkout test/api_document_details.md
+      git checkout test/grpc_document_details.md
       npm version ${version} --preid=${preid} -m "${comment}"
       git push
       git push --tags

@@ -6,4 +6,7 @@
     includePattern: ".+\\.ts$"
     outFile: ../GUIDE.md
 
+- Script/Sh: |
+    cp GUIDE.md yas-grpc.wiki/Home.md
+
 - Echo/Green: Guidline document generated successfully

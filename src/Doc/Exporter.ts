@@ -11,7 +11,7 @@ export class Exporter implements IExporter<Call> {
   constructor(private datasource: IFileAdapter, public md: MD) {
   }
 
-  export(apis: Call[]) {
+  export(calls: Call[]) {
     const mdMenu = [`# ${this.md.title || this.md.proxy.scenario.title}`, `${this.md.description || this.md.proxy.scenario.description || ''}`];
     const mdDetails = [];
 
@@ -21,12 +21,12 @@ export class Exporter implements IExporter<Call> {
     mdMenu.push(`> Updated at ${new Date().toLocaleString()}  `)
 
     mdMenu.push('', `| | Title | Package | Target |  `, `|---|---|---|---|  `)
-    apis.sort((a, b) => a.title > b.title ? 1 : -1)
+    calls.sort((a, b) => a.title > b.title ? 1 : -1)
 
-    const tags = apis.reduce((tags, api) => {
-      (api.doc.tags || [' DEFAULT']).forEach(tagName => {
+    const tags = calls.reduce((tags, call) => {
+      (call.doc.tags || [' DEFAULT']).forEach(tagName => {
         if (!tags[tagName]) tags[tagName] = []
-        tags[tagName].push(api)
+        tags[tagName].push(call)
       })
       return tags
     }, {})
@@ -37,7 +37,7 @@ export class Exporter implements IExporter<Call> {
         mdMenu.push(`|**${i + 1}**|[${call.title}](#${escape(call.title)})| ${call.package} | ${call.service}.${call.method}() | `)
       })
     })
-    apis.forEach(call => {
+    calls.forEach(call => {
       const details = []
       details.push('', '---', '', `## [${call.title}](#) <a name="${escape(call.title)}"></a>
 ${call.description || ''}`, '')

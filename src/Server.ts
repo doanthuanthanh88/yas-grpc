@@ -5,7 +5,7 @@ import merge from "lodash.merge"
 import { ElementFactory } from 'yaml-scene/src/elements/ElementFactory'
 import { ElementProxy } from "yaml-scene/src/elements/ElementProxy"
 import { IElement } from "yaml-scene/src/elements/IElement"
-import { TimeUtils } from "yaml-scene/src/utils/time"
+import { TimeUtils } from "yaml-scene/src/utils/TimeUtils"
 
 /**
  * @guide 
@@ -35,6 +35,19 @@ import { TimeUtils } from "yaml-scene/src/utils/time"
               code: 1,
               data: [{name: 'thanh', age: 1}]
             }
+            GetCustomers(): |                       # Handle code which handle request and response data
+              // _: this, 
+              // __: this.proxy, 
+              // request: Request input
+              // metadata: Request metadata
+              // ctx: gRPC context
+
+              const merge = require('lodash.merge')
+              return merge({
+                name: request.name
+              }, {
+                age: 10
+              })
     timeout: 10s                                    # Server will shutdown after the time
 ```
 
@@ -139,18 +152,28 @@ export default class Server implements IElement {
       console.group()
       for (const serviceName in packageConfig.services) {
         const service = packageConfig.services[serviceName]
-        this.#server.addService(pack[serviceName].service, Object.keys(service).reduce((sum: any, funcName: string) => {
+        this.#server.addService(pack[serviceName].service, Object.keys(service).reduce((sum: any, _funcName: string) => {
+          const [funcName, isFunction] = _funcName.split('()')
           this.proxy.logger.info(chalk.green(`- /${packageName}/${serviceName}.${funcName}(?)`))
-          sum[funcName] = async (ctx: any) => {
-            let data = service[funcName]
-            if (typeof data === 'function') {
-              data = await data(ctx, this)
+          let handler: any
+          let data = service[_funcName]
+          if (isFunction === undefined) {
+            // Fix response data
+            handler = async (ctx: any) => {
+              if (typeof data === 'function') {
+                data = await data({ ctx, metadata: ctx.metadata, request: ctx.request, _: this, __: this.proxy })
+              }
+              const rs = this.proxy.getVar(data, { ctx, metadata: ctx.metadata, request: ctx.request })
+              ctx.call.sendUnaryMessage(null, rs)
             }
-            const metadata = ctx.metadata
-            const request = ctx.request
-            const rs = this.proxy.getVar(data, { $metadata: metadata, $request: request })
-            ctx.call.sendUnaryMessage(null, rs)
+          } else {
+            // Manual handler response data
+            handler = async (ctx: any) => {
+              const rs = await this.proxy.eval(data, { ctx, metadata: ctx.metadata, request: ctx.request });
+              ctx.call.sendUnaryMessage(null, rs)
+            }
           }
+          sum[funcName] = handler
           return sum
         }, {}))
       }

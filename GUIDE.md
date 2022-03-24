@@ -5,7 +5,8 @@
 | GRPC | --- |
 |[yas-grpc/Call](#yas-grpc/Call)| Make a gGPC call to another ...|  
 |[yas-grpc/Server](#yas-grpc/Server)| Create a gRPC server to mock data ...|  
-|[yas-grpc/Doc/MD](#yas-grpc/Doc/MD)| Document all of yas-grpc/Call which got "props.doc" is true ...|  
+|[yas-grpc/Doc/MD](#yas-grpc/Doc/MD)| Document all of yas-grpc/Call which got property "doc" is true or { tags: [] } ...|  
+|[yas-grpc/Summary](#yas-grpc/Summary)| Summary after all of gRPC calls in scene executed done. (It's should be the last step) ...|  
   
   
 # Details
@@ -17,6 +18,8 @@ Make a gGPC call to another
     description: Test on dev environment        
     channelOptions:                                 # gRPC Call options
     doc: true                                       # Document it. Reference to "yas-grpc/Doc/MD"
+    doc: 
+      tags: [USER]
 
     proto: ./proto/server.proto                     # File proto
 
@@ -33,7 +36,7 @@ Make a gGPC call to another
       "name": "thanh"
     }
     timeout: 1s                                     # Request timeout
-    validate:                                       # Validate response (Same Api)
+    validate:                                       # Validate response after request done. Reference to [Validate](https://github.com/doanthuanthanh88/yaml-scene/wiki#Validate)
       - title: Response is valid
         chai: \${expect(_.response.code).to.equal(1)}
 ```
@@ -98,6 +101,19 @@ Create a gRPC server to mock data
               code: 1,
               data: [{name: 'thanh', age: 1}]
             }
+            GetCustomers(): |                       # Handle code which handle request and response data
+              // _: this, 
+              // __: this.proxy, 
+              // request: Request input
+              // metadata: Request metadata
+              // ctx: gRPC context
+
+              const merge = require('lodash.merge')
+              return merge({
+                name: request.name
+              }, {
+                age: 10
+              })
     timeout: 10s                                    # Server will shutdown after the time
 ```
 
@@ -140,14 +156,23 @@ Create a gRPC server to mock data
 </details>
 
 ## yas-grpc/Doc/MD <a name="yas-grpc/Doc/MD"></a>
-Document all of yas-grpc/Call which got "props.doc" is true  
+Document all of yas-grpc/Call which got property "doc" is true or { tags: [] }  
 
 ```yaml
 - yas-grpc/Doc/MD:
     title: Post service
-    description: Demo CRUD API to generate to markdown document
+    description: Demo CRUD gRPC to generate to markdown document
     signature: "[Doan Thuan Thanh](mailto:doanthuanthanh88@gmail.com)"
     outFile: ./grpc_document_details.md
+```
+
+
+## yas-grpc/Summary <a name="yas-grpc/Summary"></a>
+Summary after all of gRPC calls in scene executed done. (It's should be the last step)  
+
+```yaml
+- yas-grpc/Summary:
+    title: Testing result
 ```
 
 

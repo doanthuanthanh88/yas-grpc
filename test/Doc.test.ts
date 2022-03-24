@@ -82,15 +82,18 @@ steps:
               - title: Response is valid
                 chai: \${expect(_.response.code).to.equal(1)}
 
+  - yas-grpc/Summary:
+      title: gRPC Summary
+
   - yas-grpc/Doc/MD:
       title: User gRPC Service
-      description: Demo CRUD API to generate to markdown document
+      description: Demo CRUD gRPC to generate to markdown document
       signature: "[Doan Thuan Thanh](mailto:doanthuanthanh88@gmail.com)"
-      outFile: ${join(__dirname, 'api_document_details.md')}
+      outFile: ${join(__dirname, 'grpc_document_details.md')}
 `)
 
-    expect(existsSync(`${join(__dirname, 'api_document_details.md')}`)).toBe(true)
-    const cnt = readFileSync(`${join(__dirname, 'api_document_details.md')}`).toString()
+    expect(existsSync(`${join(__dirname, 'grpc_document_details.md')}`)).toBe(true)
+    const cnt = readFileSync(`${join(__dirname, 'grpc_document_details.md')}`).toString()
     expect(cnt).toContain('Test gRPC call')
     expect(cnt).not.toContain('This is not documented')
   }, 60000)

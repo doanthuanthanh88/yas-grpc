@@ -1,4 +1,4 @@
-import { TimeUtils } from "yaml-scene/src/utils/time"
+import { TimeUtils } from "yaml-scene/src/utils/TimeUtils"
 import merge from "lodash.merge"
 import { ElementProxy } from "yaml-scene/src/elements/ElementProxy"
 import { Exporter } from "./Exporter"
@@ -8,12 +8,12 @@ import { File } from "yaml-scene/src/elements/File/adapter/File"
 /**
  * @guide
  * @name yas-grpc/Doc/MD
- * @description Document all of yas-grpc/Call which got "props.doc" is true
+ * @description Document all of yas-grpc/Call which got property "doc" is true or { tags: [] }
  * @group gRPC
  * @example
 - yas-grpc/Doc/MD:
     title: Post service
-    description: Demo CRUD API to generate to markdown document
+    description: Demo CRUD gRPC to generate to markdown document
     signature: "[Doan Thuan Thanh](mailto:doanthuanthanh88@gmail.com)"
     outFile: ./grpc_document_details.md
  * @end

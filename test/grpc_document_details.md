@@ -1,7 +1,7 @@
 # User gRPC Service
-Demo CRUD API to generate to markdown document
+Demo CRUD gRPC to generate to markdown document
 > Developed by [Doan Thuan Thanh](mailto:doanthuanthanh88@gmail.com)  
-> Updated at 3/21/2022, 8:28:06 AM  
+> Updated at 3/24/2022, 10:00:03 AM  
 
 | | Title | Package | Target |  
 |---|---|---|---|  
@@ -37,6 +37,7 @@ package user;
 
 service UserService {
   rpc GetUsers(UserInput) returns (ResponseUser);
+  rpc GetCustomers(UserInput) returns (ResponseUser);
 }
 
 message ResponseUser {
@@ -141,6 +142,7 @@ package user;
 
 service UserService {
   rpc GetUsers(UserInput) returns (ResponseUser);
+  rpc GetCustomers(UserInput) returns (ResponseUser);
 }
 
 message ResponseUser {

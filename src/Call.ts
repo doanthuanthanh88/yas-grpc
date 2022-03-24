@@ -8,7 +8,7 @@ import { ElementProxy } from "yaml-scene/src/elements/ElementProxy"
 import { IElement } from "yaml-scene/src/elements/IElement"
 import Validate from "yaml-scene/src/elements/Validate"
 import { LogLevel } from "yaml-scene/src/utils/logger/LogLevel"
-import { TimeUtils } from 'yaml-scene/src/utils/time'
+import { TimeUtils } from 'yaml-scene/src/utils/TimeUtils'
 
 /**
  * @guide
@@ -24,6 +24,8 @@ import { TimeUtils } from 'yaml-scene/src/utils/time'
     description: Test on dev environment        
     channelOptions:                                 # gRPC Call options
     doc: true                                       # Document it. Reference to "yas-grpc/Doc/MD"
+    doc: 
+      tags: [USER]
 
     proto: ./proto/server.proto                     # File proto
 
@@ -40,7 +42,7 @@ import { TimeUtils } from 'yaml-scene/src/utils/time'
       "name": "thanh"
     }
     timeout: 1s                                     # Request timeout
-    validate:                                       # Validate response (Same Api)
+    validate:                                       # Validate response after request done. Reference to [Validate](https://github.com/doanthuanthanh88/yaml-scene/wiki#Validate)
       - title: Response is valid
         chai: \${expect(_.response.code).to.equal(1)}
 ```
@@ -202,7 +204,7 @@ export default class Call implements IElement {
       if (this.response) {
         this.proxy.logger.info('%s %s', chalk[this.error ? 'red' : 'green'](`${this.error ? 'ERROR' : 'OK'}`), chalk.gray(` (${this.time}ms)`))
         try {
-          await this.validateAPI()
+          await this.validateCall()
           this.error = undefined
           this.applyToVar()
         } catch (err) {
@@ -251,7 +253,7 @@ export default class Call implements IElement {
     }
   }
 
-  private async validateAPI() {
+  private async validateCall() {
     if (this.validate?.length) {
       for (const v of this.validate) {
         await v.prepare()

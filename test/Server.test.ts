@@ -46,6 +46,13 @@ steps:
                 code: 1,
                 data: [{name: 'thanh', age: 1}]
               }
+              GetCustomers(): |
+                const merge = require('lodash.merge')
+                return merge({
+                  name: request.name
+                }, {
+                  age: 10
+                })
   - Sleep: 1s
 `)
     expect(await portIsUsed('0.0.0.0', 5000)).toEqual(true)
