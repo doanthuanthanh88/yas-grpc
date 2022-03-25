@@ -54,7 +54,11 @@ steps:
       timeout: 1s
       validate:
         - title: Response is valid
-          chai: \${expect(_.response.code).to.equal(1)}
+          chai: \${expect($.response.code).to.equal(1)}
+        - title: Response is valid
+          chai: \${$.response.code.should.equals(1)}
+        - title: Response is valid
+          chai: \${assert.equal($.response.code,1)}
 
   - yas-grpc/Call:
       async: true
@@ -76,7 +80,7 @@ steps:
       timeout: 1s
       validate:
         - title: Response is valid
-          chai: \${expect(_.response.code).to.equal(10)}
+          chai: \${expect($.response.code).to.equal(10)}
 `)
 
     expect(existsSync(`${join(__dirname, 'grpc_document_details.md')}`)).toBe(true)

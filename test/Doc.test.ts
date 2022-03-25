@@ -54,7 +54,7 @@ steps:
             timeout: 1s
             validate:
               - title: Response is valid
-                chai: \${expect(_.response.code).to.equal(1)}
+                chai: \${expect($.response.code).to.equal(1)}
 
         - yas-grpc/Call:
             <-: test
@@ -80,7 +80,7 @@ steps:
             timeout: 1s
             validate:
               - title: Response is valid
-                chai: \${expect(_.response.code).to.equal(1)}
+                chai: \${expect($.response.code).to.equal(1)}
 
   - yas-grpc/Summary:
       title: gRPC Summary

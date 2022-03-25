@@ -16,29 +16,29 @@ Make a gGPC call to another
 - yas-grpc/Call
     title: Get list users which filter by name
     description: Test on dev environment        
-    channelOptions:                                 # gRPC Call options
-    doc: true                                       # Document it. Reference to "yas-grpc/Doc/MD"
+    channelOptions:                                   # gRPC Call options
+    doc: true                                         # Document it. Reference to "yas-grpc/Doc/MD"
     doc: 
       tags: [USER]
 
-    proto: ./proto/server.proto                     # File proto
+    proto: ./proto/server.proto                       # File proto
 
-    protoOptions:                                   # Protobuf options
+    protoOptions:                                     # Protobuf options
 
     package: user                                   
     service: UserService                            
     method: GetUsers                                
-    address: 0.0.0.0:5000                           # gRPC Server which send a call to
-    metadata: {                                     # Request metadata
+    address: 0.0.0.0:5000                             # gRPC Server which send a call to
+    metadata: {                                       # Request metadata
       service: "A"
     }
-    request: {                                      # Request input data
+    request: {                                        # Request input data
       "name": "thanh"
     }
-    timeout: 1s                                     # Request timeout
-    validate:                                       # Validate response after request done. Reference to [Validate](https://github.com/doanthuanthanh88/yaml-scene/wiki#Validate)
+    timeout: 1s                                       # Request timeout
+    validate:                                         # Validate response after request done. Reference to [Validate](https://github.com/doanthuanthanh88/yaml-scene/wiki#Validate)
       - title: Response is valid
-        chai: \${expect(_.response.code).to.equal(1)}
+        chai: \${expect($.response.code).to.equal(1)} # `$.response` is the result after make a gRPC call
 ```
 
 <details>
