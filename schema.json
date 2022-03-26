@@ -1,0 +1,296 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema",
+  "$id": "yas-grpc",
+  "oneOf": [
+    {
+      "$ref": "#/definitions/$id__Server"
+    },
+    {
+      "$ref": "#/definitions/$id__Summary"
+    },
+    {
+      "$ref": "#/definitions/$id__Doc_MD"
+    },
+    {
+      "$ref": "#/definitions/$id__Call"
+    }
+  ],
+  "definitions": {
+    "$id__Call": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "$id/Call": {
+          "type": "object",
+          "properties": {
+            "...": "defaultAttrs",
+            "title": {
+              "$ref": "#/definitions/getVar",
+              "description": "gRPC call title"
+            },
+            "description": {
+              "$ref": "#/definitions/getVar",
+              "description": "Description"
+            },
+            "channelOptions": {
+              "type": "object"
+            },
+            "proto": {
+              "$ref": "#/definitions/getVarString",
+              "description": "Path of .proto file"
+            },
+            "protoOptions": {
+              "type": "object"
+            },
+            "timeout": {
+              "description": "Call timeout",
+              "$ref": "#/definitions/time"
+            },
+            "address": {
+              "description": "Address to call",
+              "type": "string",
+              "examples": [
+                "0.0.0.0:5000"
+              ]
+            },
+            "package": {
+              "description": "Package name",
+              "type": "string"
+            },
+            "service": {
+              "description": "Service name",
+              "type": "string"
+            },
+            "method": {
+              "description": "Method name",
+              "type": "string"
+            },
+            "metadata": {
+              "description": "Request metadata",
+              "$ref": "#/definitions/getVarObjectString"
+            },
+            "request": {
+              "description": "Request data",
+              "$ref": "#/definitions/getVarAny"
+            },
+            "doc": {
+              "anyOf": [
+                {
+                  "description": "Document it",
+                  "type": "boolean"
+                },
+                {
+                  "type": "object",
+                  "description": "Document it",
+                  "properties": {
+                    "tags": {
+                      "description": "Set tags for the gRPC in document",
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      }
+                    }
+                  }
+                }
+              ]
+            },
+            "var": {
+              "description": "Set response data in global vars",
+              "$ref": "#/definitions/setVar"
+            },
+            "validate": {
+              "type": "array",
+              "items": {
+                "...": "validate",
+                "description": "Validate gRPC after received response"
+              }
+            }
+          }
+        }
+      }
+    },
+    "$id__Doc_MD": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "$id/Doc/MD": {
+          "description": "gRPC Document",
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "title": {
+              "$ref": "#/definitions/getVar",
+              "description": "gRPC document title"
+            },
+            "description": {
+              "$ref": "#/definitions/getVar",
+              "description": "gRPC document description"
+            },
+            "signature": {
+              "$ref": "#/definitions/getVar",
+              "description": "Developer information",
+              "examples": [
+                "[Doan Thuan Thanh](mailto:doanthuanthanh88@gmail.com)"
+              ]
+            },
+            "outFile": {
+              "$ref": "#/definitions/getVar",
+              "description": "Ouptut path of gRPC document file"
+            }
+          }
+        }
+      }
+    },
+    "$id__Summary": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "$id/Summary": {
+          "description": "Summary gRPC requests",
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "title": {
+              "$ref": "#/definitions/getVar",
+              "description": "Description"
+            }
+          }
+        }
+      }
+    },
+    "$id__Server": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "$id/Server": {
+          "description": "Mock gRPC Server",
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "...": "defaultAttrs",
+            "title": {
+              "$ref": "#/definitions/getVar",
+              "description": "Server name"
+            },
+            "description": {
+              "$ref": "#/definitions/getVar",
+              "description": "Description"
+            },
+            "channelOptions": {
+              "type": "object"
+            },
+            "timeout": {
+              "description": "Server will be stoped after timeout",
+              "$ref": "#/definitions/time"
+            },
+            "address": {
+              "description": "Address to bind",
+              "type": "string",
+              "examples": [
+                "0.0.0.0:5000"
+              ]
+            },
+            "packages": {
+              "type": "object",
+              "description": "List packages",
+              "patternProperties": {
+                ".+": {
+                  "description": "Package name",
+                  "type": "object",
+                  "properties": {
+                    "proto": {
+                      "$ref": "#/definitions/getVarString",
+                      "description": "Path of .proto file"
+                    },
+                    "protoOptions": {
+                      "type": "object"
+                    },
+                    "services": {
+                      "type": "object",
+                      "description": "List services",
+                      "patternProperties": {
+                        ".+": {
+                          "description": "List methods",
+                          "type": "object",
+                          "patternProperties": {
+                            ".+": {
+                              "description": "Response data or custom handler",
+                              "$ref": "#/definitions/getVarAny",
+                              "examples": [
+                                "!function |",
+                                "{ field1: 1 }"
+                              ]
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "async": {
+            "description": "Run asynchronized",
+            "$ref": "#/definitions/getVarBooleanString",
+            "examples": [
+              "true",
+              "false",
+              "${isAsync}"
+            ]
+          },
+          "loop": {
+            "description": "Conditional to check before loop steps. ($.loopValue, $.loopKey)",
+            "$ref": "#/definitions/getVarAny",
+            "examples": [
+              "${[1,2,3,4]}",
+              "${{key1: value1, key2: value2}}",
+              "${list}",
+              "${isRun}"
+            ]
+          },
+          "logLevel": {
+            "description": "How to show log",
+            "$ref": "#/definitions/logLevel"
+          },
+          "delay": {
+            "description": "Sleep in specific time before keep playing the next",
+            "$temp": "time"
+          },
+          "if": {
+            "description": "Check conditional to decide to run it or NOT",
+            "$ref": "#/definitions/getVarBooleanString"
+          },
+          "->": {
+            "description": "Expose for others extends",
+            "oneOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              }
+            ]
+          },
+          "<-": {
+            "description": "Extends others which is exposed by '->'",
+            "oneOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              }
+            ]
+          }
+        }
+      }
+    }
+  }
+}
