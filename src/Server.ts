@@ -6,6 +6,7 @@ import { ElementFactory } from 'yaml-scene/src/elements/ElementFactory'
 import { ElementProxy } from "yaml-scene/src/elements/ElementProxy"
 import { IElement } from "yaml-scene/src/elements/IElement"
 import { TimeUtils } from "yaml-scene/src/utils/TimeUtils"
+import { Functional } from 'yaml-scene/src/tags/model/Functional'
 
 /**
  * @guide 
@@ -35,7 +36,7 @@ import { TimeUtils } from "yaml-scene/src/utils/TimeUtils"
               code: 1,
               data: [{name: 'thanh', age: 1}]
             }
-            GetCustomers(): |                       # Handle code which handle request and response data
+            GetCustomers: !function |               # Handle code which handle request and response data
               // _: this, 
               // __: this.proxy, 
               // request: Request input
@@ -152,24 +153,25 @@ export default class Server implements IElement {
       console.group()
       for (const serviceName in packageConfig.services) {
         const service = packageConfig.services[serviceName]
-        this.#server.addService(pack[serviceName].service, Object.keys(service).reduce((sum: any, _funcName: string) => {
-          const [funcName, isFunction] = _funcName.split('()')
+        this.#server.addService(pack[serviceName].service, Object.keys(service).reduce((sum: any, funcName: string) => {
           this.proxy.logger.info(chalk.green(`- /${packageName}/${serviceName}.${funcName}(?)`))
           let handler: any
-          let data = service[_funcName]
-          if (isFunction === undefined) {
+          let data = service[funcName]
+          if (typeof data === 'function') {
             // Fix response data
             handler = async (ctx: any) => {
-              if (typeof data === 'function') {
-                data = await data({ ctx, metadata: ctx.metadata, request: ctx.request, _: this, __: this.proxy })
-              }
-              const rs = this.proxy.getVar(data, { ctx, metadata: ctx.metadata, request: ctx.request })
+              const rs = await data({ ctx, metadata: ctx.metadata, request: ctx.request, _: this, __: this.proxy })
+              ctx.call.sendUnaryMessage(null, rs)
+            }
+          } else if (data instanceof Functional) {
+            // Manual handler response data
+            handler = async (ctx: any) => {
+              const rs = await this.proxy.eval(data.toString(), { ctx, metadata: ctx.metadata, request: ctx.request });
               ctx.call.sendUnaryMessage(null, rs)
             }
           } else {
-            // Manual handler response data
             handler = async (ctx: any) => {
-              const rs = await this.proxy.eval(data, { ctx, metadata: ctx.metadata, request: ctx.request });
+              const rs = this.proxy.getVar(data, { ctx, metadata: ctx.metadata, request: ctx.request })
               ctx.call.sendUnaryMessage(null, rs)
             }
           }

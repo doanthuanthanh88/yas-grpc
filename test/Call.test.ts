@@ -29,7 +29,7 @@ steps:
                 code: 1,
                 data: [{name: 'thanh', age: 1}]
               }
-              GetCustomers(): |
+              GetCustomers: !function |
                 return {
                   code: 10,
                   data: [{name: 'thanh', age: 10}]

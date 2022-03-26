@@ -101,7 +101,7 @@ Create a gRPC server to mock data
               code: 1,
               data: [{name: 'thanh', age: 1}]
             }
-            GetCustomers(): |                       # Handle code which handle request and response data
+            GetCustomers: !function |               # Handle code which handle request and response data
               // _: this, 
               // __: this.proxy, 
               // request: Request input

@@ -19,8 +19,13 @@
         "source.organizeImports": false,
     },
     "typescript.tsc.autoDetect": "off",
-    "grunt.autoDetect": "off",
-    "jake.autoDetect": "off",
-    "gulp.autoDetect": "off",
-    "npm.autoDetect": "off"
+    "npm.autoDetect": "off",
+    "yaml.customTags": [
+        "!binary scalar",
+        "!fragment scalar",
+        "!function scalar",
+    ],
+    "yaml.schemas": {
+        "schema.json": "*.yas.yaml",
+    }
 }

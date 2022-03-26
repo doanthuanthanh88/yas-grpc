@@ -23,5 +23,5 @@ steps:
       - title: Response is valid
         chai: \${expect($.response.code).to.equal(1)}
 
-- !fragment ./Summary.yaml
-- !fragment ./Doc.yaml
+- !fragment ./Summary.yas.yaml
+- !fragment ./Doc.yas.yaml

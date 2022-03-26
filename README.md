@@ -69,7 +69,7 @@ Create a gRPC server to mock data
         proto: ./proto/server.proto
         services:
           UserService:
-            GetCustomers(): |
+            GetCustomers: !function |
               const merge = require('lodash.merge')
               return merge({
                 name: request.name

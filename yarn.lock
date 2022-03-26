@@ -2836,9 +2836,9 @@ yallist@^4.0.0:
   integrity sha512-3wdGidZyq5PB084XLES5TpOSRA3wjXAlIWMhum2kRcv/41Sn2emQ0dycQW4uZXLejwKvg6EsvbdlVL+FYEct7A==
 
 yaml-scene@^1.0.0:
-  version "1.0.10"
-  resolved "https://registry.yarnpkg.com/yaml-scene/-/yaml-scene-1.0.10.tgz#e9ba36964f33a18e49a3275916625f6bfbd56c4e"
-  integrity sha512-ctfIZyp9PtkcdRftKJMliQ+4Y9zgZ2xhNdBS5muCMAJpRjv5t29DwiNSufP4RlAU+q9870OCPXy2i04TRMFbMg==
+  version "1.0.12"
+  resolved "https://registry.yarnpkg.com/yaml-scene/-/yaml-scene-1.0.12.tgz#9d34aaf77f1f298a109d2231812aa4ebb60e598e"
+  integrity sha512-APccOfJ+z3ynB2p4BoAoqCCq5EhkIA80Warsc86iFQn8Ryw7I/YWzjcmuoMClbFDTVvhey8PTO4JADvWqN8W6w==
   dependencies:
     chai "^4.3.3"
     chalk "^2.4.2"

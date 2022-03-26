@@ -137,7 +137,7 @@ export default class Call implements IElement {
       ...props,
       validate: props.validate?.map(v => {
         const _v = ElementFactory.CreateElement<Validate>('Validate', this.proxy.scenario)
-        _v.changeLogLevel(this.logLevel)
+        _v.changeLogLevel(props.logLevel)
         _v.init(v)
         return _v
       })
@@ -158,7 +158,7 @@ export default class Call implements IElement {
       this.timeout = TimeUtils.GetMsTime(this.timeout)
     }
     this.validate?.forEach(v => {
-      v.element['$'] = this
+      v.element['$'] = this.$
       v.element['$$'] = this.$$
     })
     if (!this.#client) {
@@ -266,7 +266,7 @@ export default class Call implements IElement {
 
   private applyToVar() {
     if (this.var && this.response) {
-      this.proxy.setVar(this.var, this, 'response.data')
+      this.proxy.setVar(this.var, { $: this.$ }, '$.response')
     }
   }
 
