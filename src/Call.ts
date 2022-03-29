@@ -7,8 +7,9 @@ import { ElementFactory } from "yaml-scene/src/elements/ElementFactory"
 import { ElementProxy } from "yaml-scene/src/elements/ElementProxy"
 import { IElement } from "yaml-scene/src/elements/IElement"
 import Validate from "yaml-scene/src/elements/Validate"
-import { LogLevel } from "yaml-scene/src/utils/logger/LogLevel"
 import { TimeUtils } from 'yaml-scene/src/utils/TimeUtils'
+import { Scenario } from "yaml-scene/src/singleton/Scenario"
+import { LoggerManager } from "yaml-scene/src/singleton/LoggerManager"
 
 /**
  * @guide
@@ -136,7 +137,7 @@ export default class Call implements IElement {
     }, {
       ...props,
       validate: props.validate?.map(v => {
-        const _v = ElementFactory.CreateElement<Validate>('Validate', this.proxy.scenario)
+        const _v = ElementFactory.CreateElement<Validate>('Validate')
         _v.changeLogLevel(props.logLevel)
         _v.init(v)
         return _v
@@ -215,14 +216,14 @@ export default class Call implements IElement {
         }
       }
       this.printLog()
-      this.proxy.scenario.events.emit('gRPC-call.done', !this.error, this)
+      Scenario.Instance.events.emit('gRPC-call.done', !this.error, this)
       if (this.error) throw this.error
       console.groupEnd()
     }
   }
 
   private printLog() {
-    if (this.proxy.logger.getLevel() <= LogLevel.TRACE) {
+    if (this.proxy.logger.getLevel() <= LoggerManager.LogLevel.TRACE) {
       console.group()
       this.proxy.logger.debug('%s', chalk.red.bold('* Request * * * * * * * * * *'))
       console.group()

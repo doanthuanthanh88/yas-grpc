@@ -5,8 +5,8 @@ import merge from "lodash.merge"
 import { ElementFactory } from 'yaml-scene/src/elements/ElementFactory'
 import { ElementProxy } from "yaml-scene/src/elements/ElementProxy"
 import { IElement } from "yaml-scene/src/elements/IElement"
-import { TimeUtils } from "yaml-scene/src/utils/TimeUtils"
 import { Functional } from 'yaml-scene/src/tags/model/Functional'
+import { TimeUtils } from "yaml-scene/src/utils/TimeUtils"
 
 /**
  * @guide 
@@ -202,7 +202,7 @@ export default class Server implements IElement {
       this.#server.bindAsync(`${this.address}`, ServerCredentials.createInsecure(), async (err: Error) => {
         if (err) reject(err)
         this.#server.start();
-        const pause = ElementFactory.CreateElement('Pause', this.proxy.scenario)
+        const pause = ElementFactory.CreateElement('Pause')
         pause.init({
           title: `Enter to stop the gRPC service "${this.title || ''}" !`,
           time: this.timeout

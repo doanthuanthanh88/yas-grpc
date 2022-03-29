@@ -4,6 +4,7 @@ import { ElementProxy } from "yaml-scene/src/elements/ElementProxy"
 import { Exporter } from "./Exporter"
 import Call from "@app/Call"
 import { File } from "yaml-scene/src/elements/File/adapter/File"
+import { Scenario } from "yaml-scene/src/singleton/Scenario"
 
 /**
  * @guide
@@ -35,7 +36,7 @@ export default class MD {
   init(props: any) {
     if (!props.outFile) throw new Error(`"outFile" is required in ${this.constructor.name}`)
     merge(this, props)
-    this.proxy.scenario.events
+    Scenario.Instance.events
       .on('gRPC-call.done', (isPassed: boolean, call: Call) => {
         if (isPassed && !!call.doc) {
           this.calls.push(call)

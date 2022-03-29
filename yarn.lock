@@ -919,9 +919,9 @@ camelcase@^6.2.0:
   integrity sha512-Gmy6FhYlCY7uOElZUSbxo2UCDH8owEk996gkbrpsgGtrJLM3J7jGxl9Ic7Qwwj4ivOE5AWZWRMecDdF7hqGjFA==
 
 caniuse-lite@^1.0.30001317:
-  version "1.0.30001320"
-  resolved "https://registry.yarnpkg.com/caniuse-lite/-/caniuse-lite-1.0.30001320.tgz#8397391bec389b8ccce328636499b7284ee13285"
-  integrity sha512-MWPzG54AGdo3nWx7zHZTefseM5Y1ccM7hlQKHRqJkPozUaw3hNbBTMmLn16GG2FUzjR13Cr3NPfhIieX5PzXDA==
+  version "1.0.30001322"
+  resolved "https://registry.yarnpkg.com/caniuse-lite/-/caniuse-lite-1.0.30001322.tgz#2e4c09d11e1e8f852767dab287069a8d0c29d623"
+  integrity sha512-neRmrmIrCGuMnxGSoh+x7zYtQFFgnSY2jaomjU56sCkTA6JINqQrxutF459JpWcWRajvoyn95sOXq4Pqrnyjew==
 
 chai@^4.3.3:
   version "4.3.6"
@@ -1159,9 +1159,9 @@ domexception@^2.0.1:
     webidl-conversions "^5.0.0"
 
 electron-to-chromium@^1.4.84:
-  version "1.4.94"
-  resolved "https://registry.yarnpkg.com/electron-to-chromium/-/electron-to-chromium-1.4.94.tgz#f19206c977361264a51d53a7ea7ef861a94baa10"
-  integrity sha512-CoOKsuACoa0PAG3hQXxbh/XDiFcjGuSyGKUi09cjMHOt6RCi7/EXgXhaFF3I+aC89Omudqmkzd0YOQKxwtf/Bg==
+  version "1.4.97"
+  resolved "https://registry.yarnpkg.com/electron-to-chromium/-/electron-to-chromium-1.4.97.tgz#36578e57a6ae4f50d2ce5790380616567c40c911"
+  integrity sha512-vqSu7Qn6o5E1uAJQxmq2U69aBhBTxUAXMuT5Sm3jj8kEJciuUcKciktLuTPFSRlwSdNyeu9qah8Nzy9JyxefCw==
 
 emittery@^0.8.1:
   version "0.8.1"
@@ -2059,6 +2059,11 @@ lodash.omit@^4.5.0:
   resolved "https://registry.yarnpkg.com/lodash.omit/-/lodash.omit-4.5.0.tgz#6eb19ae5a1ee1dd9df0b969e66ce0b7fa30b5e60"
   integrity sha1-brGa5aHuHdnfC5aeZs4Lf6MLXmA=
 
+lodash.uniqwith@^4.5.0:
+  version "4.5.0"
+  resolved "https://registry.yarnpkg.com/lodash.uniqwith/-/lodash.uniqwith-4.5.0.tgz#7a0cbf65f43b5928625a9d4d0dc54b18cadc7ef3"
+  integrity sha1-egy/ZfQ7WShiWp1NDcVLGMrcfvM=
+
 lodash.without@^4.4.0:
   version "4.4.0"
   resolved "https://registry.yarnpkg.com/lodash.without/-/lodash.without-4.4.0.tgz#3cd4574a00b67bae373a94b748772640507b7aac"
@@ -2828,10 +2833,10 @@ yallist@^4.0.0:
   resolved "https://registry.yarnpkg.com/yallist/-/yallist-4.0.0.tgz#9bb92790d9c0effec63be73519e11a35019a3a72"
   integrity sha512-3wdGidZyq5PB084XLES5TpOSRA3wjXAlIWMhum2kRcv/41Sn2emQ0dycQW4uZXLejwKvg6EsvbdlVL+FYEct7A==
 
-yaml-scene@^1.0.0:
-  version "1.0.13"
-  resolved "https://registry.yarnpkg.com/yaml-scene/-/yaml-scene-1.0.13.tgz#48119b057edbf60079928c9a3eac3a5ac6b5fc1f"
-  integrity sha512-FV8WZ2V5MkNJDnC2Fe4YcALUPQ9fIG8cAP3rZ8vrRxjKpRi1t5zHNfvw5Ngaia9CRAgpAvL8hkzYuEOlQ+P2iw==
+yaml-scene@^1.1.0:
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/yaml-scene/-/yaml-scene-1.1.0.tgz#49d82c4ce343b0089d0064a958f68a2271eae4c6"
+  integrity sha512-B9JMpo7DXa2jJK3o4XMktj5+w2dOeLZ1EaxNBnBCmgONTl18mEjKEz7baDib74qrnSsNTs+llPrVJ1Omk1hxCA==
   dependencies:
     chai "^4.3.3"
     chalk "^2.4.2"
@@ -2843,6 +2848,7 @@ yaml-scene@^1.0.0:
     lodash.clonedeep "^4.5.0"
     lodash.merge "^4.6.2"
     lodash.omit "^4.5.0"
+    lodash.uniqwith "^4.5.0"
     loglevel "^1.8.0"
     prompts "^2.4.0"
     to-json-schema "^0.2.5"

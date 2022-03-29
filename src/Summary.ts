@@ -2,6 +2,7 @@ import chalk from "chalk"
 import merge from "lodash.merge"
 import { ElementProxy } from "yaml-scene/src/elements/ElementProxy"
 import { TimeUtils } from "yaml-scene/src/utils/TimeUtils"
+import { Scenario } from "yaml-scene/src/singleton/Scenario"
 
 /**
  * @guide
@@ -31,7 +32,7 @@ export default class Summary {
     } else {
       merge(this, props)
     }
-    this.proxy.scenario.events
+    Scenario.Instance.events
       .on('gRPC-call.done', isPassed => {
         if (isPassed) {
           this.passed++
@@ -45,7 +46,7 @@ export default class Summary {
     await TimeUtils.Delay('1s')
     this.proxy.logger.info('---------------------------------')
     console.group()
-    this.proxy.logger.info('%s %s', chalk.cyan.bold(this.title), chalk.gray(`${this.proxy.scenario.time.dispose - this.proxy.scenario.time.begin}ms`))
+    this.proxy.logger.info(chalk.cyan.bold(this.title))
     this.proxy.logger.info(chalk.green('- Passed %d/%d'), this.passed, this.total)
     this.proxy.logger.info(chalk.red('- Failed %d/%d'), this.failed, this.total)
     console.groupEnd()

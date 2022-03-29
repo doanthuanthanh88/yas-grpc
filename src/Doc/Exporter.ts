@@ -2,9 +2,10 @@ import { readFileSync } from 'fs';
 import { basename } from 'path';
 import { escape } from 'querystring';
 import { IFileAdapter } from 'yaml-scene/src/elements/File/adapter/IFileAdapter';
+import { Scenario } from 'yaml-scene/src/singleton/Scenario';
 import { Exporter as IExporter } from 'yaml-scene/src/utils/doc/Exporter';
-import MD from './MD';
 import Call from '../Call';
+import MD from './MD';
 
 export class Exporter implements IExporter<Call> {
 
@@ -12,7 +13,7 @@ export class Exporter implements IExporter<Call> {
   }
 
   export(calls: Call[]) {
-    const mdMenu = [`# ${this.md.title || this.md.proxy.scenario.title}`, `${this.md.description || this.md.proxy.scenario.description || ''}`];
+    const mdMenu = [`# ${this.md.title || Scenario.Instance.title}`, `${this.md.description || Scenario.Instance.description || ''}`];
     const mdDetails = [];
 
     if (this.md.signature) {

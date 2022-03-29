@@ -26,6 +26,6 @@
         "!function scalar",
     ],
     "yaml.schemas": {
-        "schema.json": "*.yas.yaml",
+        "/home/node/.config/yarn/global/node_modules/yaml-scene/schema.yas.json": "*.yas.yaml",
     }
 }
