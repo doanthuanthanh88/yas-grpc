@@ -21,9 +21,9 @@
     "typescript.tsc.autoDetect": "off",
     "npm.autoDetect": "off",
     "yaml.customTags": [
-        "!binary scalar",
         "!fragment scalar",
         "!function scalar",
+        "!tag mapping"
     ],
     "yaml.schemas": {
         "/home/node/.config/yarn/global/node_modules/yaml-scene/schema.yas.json": "*.yas.yaml",

@@ -1,11 +1,8 @@
-extensions:
-  yas-grpc: ../../dist
-steps:
 - yas-grpc/Call:
     title: Test gRPC call
     proto: ../../proto/server.proto
     doc: true
-    protoOptions: 
+    protoOptions:
       keepCase: true
       longs: String
       enums: String
@@ -14,10 +11,8 @@ steps:
     package: user
     service: UserService
     method: GetUsers
-    address: 0.0.0.0:5000
-    request: {
-      "name": "thanh"
-    }
+    address: 127.0.0.1:5000
+    request: { "name": "thanh" }
     timeout: 1s
     validate:
       - title: Response is valid

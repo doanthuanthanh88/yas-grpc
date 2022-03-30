@@ -1,13 +1,11 @@
-extensions:
-  yas-grpc: ../../dist
-steps:
 - yas-grpc/Server:
+    logLevel: debug
     title: Start mock gRPC server
-    address: 0.0.0.0:5000
+    address: 127.0.0.1:5000
     packages:
       user:
         proto: ../../proto/server.proto
-        protoOptions: 
+        protoOptions:
           keepCase: true
           longs: String
           enums: String
@@ -15,7 +13,4 @@ steps:
           oneofs: true
         services:
           UserService:
-            GetUsers: {
-              code: 1,
-              data: [{name: 'thanh', age: 1}]
-            }
+            GetUsers: { code: 1, data: [{ name: "thanh", age: 1 }] }

@@ -123,11 +123,11 @@ export default class Server implements IElement {
     if (!this.packages) this.packages = {}
   }
 
-  prepare() {
-    this.title = this.proxy.getVar(this.title)
-    this.description = this.proxy.getVar(this.description)
-    this.address = this.proxy.getVar(this.address)
-    this.timeout = this.proxy.getVar(this.timeout)
+  async prepare() {
+    this.title = await this.proxy.getVar(this.title)
+    this.description = await this.proxy.getVar(this.description)
+    this.address = await this.proxy.getVar(this.address)
+    this.timeout = await this.proxy.getVar(this.timeout)
     if (this.timeout) {
       this.timeout = TimeUtils.GetMsTime(this.timeout)
     }
@@ -171,7 +171,7 @@ export default class Server implements IElement {
             }
           } else {
             handler = async (ctx: any) => {
-              const rs = this.proxy.getVar(data, { ctx, metadata: ctx.metadata, request: ctx.request })
+              const rs = await this.proxy.getVar(data, { ctx, metadata: ctx.metadata, request: ctx.request })
               ctx.call.sendUnaryMessage(null, rs)
             }
           }

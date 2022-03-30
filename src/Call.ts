@@ -1,4 +1,4 @@
-import { credentials, loadPackageDefinition, Metadata, ChannelOptions } from '@grpc/grpc-js'
+import { ChannelOptions, credentials, loadPackageDefinition, Metadata } from '@grpc/grpc-js'
 import { ServiceClient } from '@grpc/grpc-js/build/src/make-client'
 import { loadSync, Options } from '@grpc/proto-loader'
 import chalk from "chalk"
@@ -145,14 +145,14 @@ export default class Call implements IElement {
     })
   }
 
-  prepare() {
-    this.title = this.proxy.getVar(this.title)
-    this.description = this.proxy.getVar(this.description)
-    this.address = this.proxy.getVar(this.address)
-    this.timeout = this.proxy.getVar(this.timeout)
-    this.package = this.proxy.getVar(this.package)
-    this.service = this.proxy.getVar(this.service)
-    this.method = this.proxy.getVar(this.method)
+  async prepare() {
+    this.title = await this.proxy.getVar(this.title)
+    this.description = await this.proxy.getVar(this.description)
+    this.address = await this.proxy.getVar(this.address)
+    this.timeout = await this.proxy.getVar(this.timeout)
+    this.package = await this.proxy.getVar(this.package)
+    this.service = await this.proxy.getVar(this.service)
+    this.method = await this.proxy.getVar(this.method)
     this.proto = this.proxy.resolvePath(this.proto)
     this.protoOptions?.includeDirs?.forEach((e, i) => this.protoOptions.includeDirs[i] = this.proxy.resolvePath(e))
     if (this.timeout) {
@@ -209,7 +209,7 @@ export default class Call implements IElement {
         try {
           await this.validateCall()
           this.error = undefined
-          this.applyToVar()
+          await this.applyToVar()
         } catch (err) {
           this.error = err
           this.proxy.changeLogLevel('debug')
@@ -265,9 +265,9 @@ export default class Call implements IElement {
     }
   }
 
-  private applyToVar() {
+  private async applyToVar() {
     if (this.var && this.response) {
-      this.proxy.setVar(this.var, { $: this.$ }, '$.response')
+      await this.proxy.setVar(this.var, { $: this.$ }, '$.response')
     }
   }
 
