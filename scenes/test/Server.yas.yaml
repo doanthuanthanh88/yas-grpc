@@ -1,16 +1,19 @@
-- yas-grpc/Server:
-    logLevel: debug
-    title: Start mock gRPC server
-    address: 127.0.0.1:5000
-    packages:
-      user:
-        proto: ../../proto/server.proto
-        protoOptions:
-          keepCase: true
-          longs: String
-          enums: String
-          defaults: true
-          oneofs: true
-        services:
-          UserService:
-            GetUsers: { code: 1, data: [{ name: "thanh", age: 1 }] }
+logLevel: debug
+extensions:
+  yas-grpc: ../../dist
+steps:
+  - yas-grpc/Server:
+      title: Start mock gRPC server
+      address: 127.0.0.1:5000
+      packages:
+        user:
+          proto: ../../proto/server.proto
+          protoOptions:
+            keepCase: true
+            longs: String
+            enums: String
+            defaults: true
+            oneofs: true
+          services:
+            UserService:
+              GetUsers: { code: 1, data: [{ name: "thanh", age: 1 }] }

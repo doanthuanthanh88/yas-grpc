@@ -1,8 +1,11 @@
 import Call from "@app/Call"
+import chalk from "chalk"
 import merge from "lodash.merge"
 import { ElementProxy } from "yaml-scene/src/elements/ElementProxy"
 import { File } from "yaml-scene/src/elements/File/adapter/File"
+import { IElement } from "yaml-scene/src/elements/IElement"
 import { Scenario } from "yaml-scene/src/singleton/Scenario"
+import { TraceError } from "yaml-scene/src/utils/error/TraceError"
 import { TimeUtils } from "yaml-scene/src/utils/TimeUtils"
 import { Exporter } from "./Exporter"
 
@@ -20,8 +23,11 @@ import { Exporter } from "./Exporter"
  * @end
  */
 export default class MD {
-  proxy: ElementProxy<MD>
-  calls: Call[]
+  proxy: ElementProxy<this>
+  $$: IElement
+  $: this
+
+  private _calls: Call[]
 
   title: string
   description: string
@@ -30,29 +36,30 @@ export default class MD {
   outFile: string
 
   constructor() {
-    this.calls = new Array()
+    this._calls = []
   }
 
   init(props: any) {
-    if (!props.outFile) throw new Error(`"outFile" is required in ${this.constructor.name}`)
     merge(this, props)
     Scenario.Instance.events
       .on('gRPC-call.done', (isPassed: boolean, call: Call) => {
         if (isPassed && !!call.doc) {
-          this.calls.push(call)
+          this._calls.push(call)
         }
       })
   }
 
-  prepare() {
+  async prepare() {
+    await this.proxy.applyVars(this, 'title', 'description', 'signature', 'outFile')
+    if (!this.outFile) throw new TraceError(`"outFile"  is required`, { outFile: this.outFile })
     this.outFile = this.proxy.resolvePath(this.outFile)
   }
 
   async exec() {
     await TimeUtils.Delay('1s')
     const exporter = new Exporter(new File(this.outFile), this)
-    exporter.export(this.calls.sort((a, b) => a.title > b.title ? 1 : -1))
-    this.proxy.logger.info(`Document is generated at ${this.outFile}`)
+    await exporter.export(this._calls.sort((a, b) => a.title > b.title ? 1 : -1))
+    this.proxy.logger.info(chalk.green(`API Document is saved to "${this.outFile}"`))
   }
 
 }

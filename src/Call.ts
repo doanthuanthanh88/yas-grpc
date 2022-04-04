@@ -7,9 +7,8 @@ import { ElementFactory } from "yaml-scene/src/elements/ElementFactory"
 import { ElementProxy } from "yaml-scene/src/elements/ElementProxy"
 import { IElement } from "yaml-scene/src/elements/IElement"
 import Validate from "yaml-scene/src/elements/Validate"
-import { TimeUtils } from 'yaml-scene/src/utils/TimeUtils'
 import { Scenario } from "yaml-scene/src/singleton/Scenario"
-import { LoggerManager } from "yaml-scene/src/singleton/LoggerManager"
+import { TimeUtils } from 'yaml-scene/src/utils/TimeUtils'
 
 /**
  * @guide
@@ -88,10 +87,9 @@ import { LoggerManager } from "yaml-scene/src/singleton/LoggerManager"
  * @end
  */
 export default class Call implements IElement {
-  proxy: ElementProxy<Call>
-  $$: IElement;
-  $: this;
-  logLevel: any
+  proxy: ElementProxy<this>
+  $$: IElement
+  $: this
 
   title: string
   description: string
@@ -107,7 +105,7 @@ export default class Call implements IElement {
   service: string
   method: string
 
-  address?: string
+  address: string
   metadata: any
   request: any
   response: any
@@ -119,10 +117,10 @@ export default class Call implements IElement {
   var: any
   validate: ElementProxy<Validate>[]
 
-  #client: ServiceClient
+  private _client: ServiceClient
 
   get uri() {
-    return `/${this.package}/${this.service}.${this.method}`
+    return `${this.package}/${this.service}.${this.method}()`
   }
 
   init(props: any) {
@@ -146,30 +144,22 @@ export default class Call implements IElement {
   }
 
   async prepare() {
-    this.title = await this.proxy.getVar(this.title)
-    this.description = await this.proxy.getVar(this.description)
-    this.address = await this.proxy.getVar(this.address)
-    this.timeout = await this.proxy.getVar(this.timeout)
-    this.package = await this.proxy.getVar(this.package)
-    this.service = await this.proxy.getVar(this.service)
-    this.method = await this.proxy.getVar(this.method)
+    await this.proxy.applyVars(this, 'title', 'description', 'address', 'timeout', 'package', 'service', 'method', 'proto', 'protoOptions', 'channelOptions')
     this.proto = this.proxy.resolvePath(this.proto)
     this.protoOptions?.includeDirs?.forEach((e, i) => this.protoOptions.includeDirs[i] = this.proxy.resolvePath(e))
-    if (this.timeout) {
-      this.timeout = TimeUtils.GetMsTime(this.timeout)
-    }
+    if (this.timeout) this.timeout = TimeUtils.GetMsTime(this.timeout)
     this.validate?.forEach(v => {
-      v.element['$'] = this.$
-      v.element['$$'] = this.$$
+      v.element.$ = this.$
+      v.element.$$ = this.$$
     })
-    if (!this.#client) {
+    if (!this._client) {
       const packageDefinition = loadSync(
         this.proto,
         this.protoOptions
       )
       const protoDescriptor = loadPackageDefinition(packageDefinition);
       const pack = protoDescriptor[this.package];
-      this.#client = new pack[this.service](`${this.address}`, credentials.createInsecure(), this.channelOptions);
+      this._client = new pack[this.service](`${this.address}`, credentials.createInsecure(), this.channelOptions);
     }
   }
 
@@ -192,7 +182,7 @@ export default class Call implements IElement {
             callback(null, meta);
           })
         }
-        this.#client[this.method](this.request, opts, (err, data) => {
+        this._client[this.method](this.request, opts, (err, data) => {
           if (err) {
             return reject(err)
           }
@@ -222,34 +212,46 @@ export default class Call implements IElement {
     }
   }
 
-  private printLog() {
-    if (this.proxy.logger.getLevel() <= LoggerManager.LogLevel.TRACE) {
-      console.group()
-      this.proxy.logger.debug('%s', chalk.red.bold('* Request * * * * * * * * * *'))
-      console.group()
-      this.proxy.logger.debug('%s: %s', chalk.magenta('* URI'), `/${this.package}/${this.service}.${this.method}`)
+  cancel() {
+    this._client?.close()
+  }
 
-      const metadata = Object.keys(this.metadata)
-      if (metadata.length) {
-        this.proxy.logger.debug('%s: ', chalk.magenta('* Metadata'))
+  async dispose() {
+    if (this.validate?.length) await Promise.all(this.validate.map(v => v.dispose()))
+    this.cancel()
+    this._client = undefined
+  }
+
+  private printLog() {
+    if (this.proxy.logger.is('debug')) {
+      console.group()
+      this.proxy.logger.debug(chalk.bgMagenta.white(' Request '))
+      console.group()
+      this.proxy.logger.debug('%s: %s', chalk.magenta('* URI'), this.uri)
+
+      if (this.metadata) {
+        this.proxy.logger.debug('%s: ', chalk.magenta('* Request meta data'))
         console.group()
-        metadata.forEach(k => this.proxy.logger.debug(`• %s: %s`, chalk.magenta(k), this.metadata[k]))
+        Object.fromEntries(this.metadata).forEach(([k, vl]) => {
+          this.proxy.logger.debug(`• %s: %s`, chalk.magenta(k), vl)
+        })
         console.groupEnd()
       }
+
       // Request
       if (this.request) {
         this.proxy.logger.debug('%s: ', chalk.magenta('* Request data'))
         this.proxy.logger.debug(this.request)
       }
       console.groupEnd()
-      this.proxy.logger.debug('%s', chalk.red.bold('* Response * * * * * * * * * *'))
+
+      this.proxy.logger.debug('')
+      this.proxy.logger.debug(chalk.bgMagenta.white(' Response '))
       console.group()
       if (this.response) {
         // Response data
-        if (this.response) {
-          this.proxy.logger.debug('%s: ', chalk.magenta('* Response data'))
-          this.proxy.logger.debug(this.response)
-        }
+        this.proxy.logger.debug('%s: ', chalk.magenta('* Response data'))
+        this.proxy.logger.debug(this.response)
       }
       console.groupEnd()
       console.groupEnd()
@@ -269,11 +271,6 @@ export default class Call implements IElement {
     if (this.var && this.response) {
       await this.proxy.setVar(this.var, { $: this.$ }, '$.response')
     }
-  }
-
-  dispose() {
-    this.#client?.close()
-    this.#client = null
   }
 
 }

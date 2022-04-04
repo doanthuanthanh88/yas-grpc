@@ -92,14 +92,13 @@ import { TimeUtils } from "yaml-scene/src/utils/TimeUtils"
  * @end
  */
 export default class Server implements IElement {
-  proxy: ElementProxy<Server>
+  proxy: ElementProxy<this>
+  $$: IElement
+  $: this
 
   title: string
-  description: string
-
   timeout?: number
   channelOptions?: Partial<ChannelOptions>
-
   address?: string
   packages: {
     [name: string]: {
@@ -114,24 +113,19 @@ export default class Server implements IElement {
     }
   }
 
-  time: number
-
-  #server: GRPCServer
+  private _server?: GRPCServer
 
   init(props: any) {
     merge(this, props)
-    if (!this.packages) this.packages = {}
   }
 
   async prepare() {
-    this.title = await this.proxy.getVar(this.title)
-    this.description = await this.proxy.getVar(this.description)
-    this.address = await this.proxy.getVar(this.address)
-    this.timeout = await this.proxy.getVar(this.timeout)
+    await this.proxy.applyVars(this, 'title', 'address', 'timeout', 'packages', 'channelOptions')
     if (this.timeout) {
       this.timeout = TimeUtils.GetMsTime(this.timeout)
     }
-    this.#server = new GRPCServer(this.channelOptions)
+    if (!this.packages) this.packages = {}
+    this._server = new GRPCServer(this.channelOptions)
     for (const packageName in this.packages) {
       const packageConfig = this.packages[packageName]
       // Suggested options for similarity to existing grpc.load behavior
@@ -153,8 +147,8 @@ export default class Server implements IElement {
       console.group()
       for (const serviceName in packageConfig.services) {
         const service = packageConfig.services[serviceName]
-        this.#server.addService(pack[serviceName].service, Object.keys(service).reduce((sum: any, funcName: string) => {
-          this.proxy.logger.info(chalk.green(`- /${packageName}/${serviceName}.${funcName}(?)`))
+        this._server.addService(pack[serviceName].service, Object.keys(service).reduce((sum: any, funcName: string) => {
+          this.proxy.logger.info(chalk.green(`✓ /${packageName}/${serviceName}.${funcName}(?)`))
           let handler: any
           let data = service[funcName]
           if (typeof data === 'function') {
@@ -184,24 +178,21 @@ export default class Server implements IElement {
   }
 
   async exec() {
-    if (this.title) {
-      this.proxy.logger.info(chalk.green('%s'), this.title)
-    }
-    console.group()
+    if (this.title) this.proxy.logger.info(this.title);
+    this.title && console.group();
     try {
       await this.start()
     } finally {
-      this.stop()
-      console.groupEnd()
+      this.title && console.groupEnd();
     }
   }
 
   private start() {
     return new Promise((resolve, reject) => {
       this.proxy.logger.debug(chalk.green(`gRPC Server is listening at ${this.address}`))
-      this.#server.bindAsync(`${this.address}`, ServerCredentials.createInsecure(), async (err: Error) => {
+      this._server.bindAsync(`${this.address}`, ServerCredentials.createInsecure(), async (err: Error) => {
         if (err) reject(err)
-        this.#server.start();
+        this._server.start()
         const pause = ElementFactory.CreateElement('Pause')
         pause.init({
           title: `Enter to stop the gRPC service "${this.title || ''}" !`,
@@ -209,15 +200,26 @@ export default class Server implements IElement {
         })
         await pause.prepare()
         await pause.exec()
-        resolve(undefined)
+        await pause.dispose()
+        try {
+          await this.stop()
+          resolve(undefined)
+        } catch (err) {
+          reject(err)
+        }
       })
     })
   }
 
-  private stop() {
-    if (this.#server) {
-      this.#server.forceShutdown()
-      this.#server = null
+  private async stop() {
+    if (this._server) {
+      await new Promise((resolve, reject) => {
+        this._server.tryShutdown(err => {
+          if (err) return reject(err)
+          this._server = undefined
+          resolve(undefined)
+        });
+      })
     }
   }
 

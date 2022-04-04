@@ -13,7 +13,7 @@ steps:
       async: true
       title: Start mock gRPC server
       address: 0.0.0.0:5000
-      timeout: 3s
+      timeout: 5s
       packages:
         user:
           proto: ${join(__dirname, '../proto/server.proto')}
@@ -34,59 +34,61 @@ steps:
                   code: 10,
                   data: [{name: 'thanh', age: 10}]
                 }
-  - yas-grpc/Call:
+  - Group:
+      stepAsync: true
       async: true
-      title: Test gRPC call
-      proto: ${join(__dirname, '../proto/server.proto')}
-      protoOptions: 
-        keepCase: true
-        longs: String
-        enums: String
-        defaults: true
-        oneofs: true
-      package: user
-      service: UserService
-      method: GetUsers
-      address: 0.0.0.0:5000
-      request: {
-        "name": "thanh"
-      }
-      timeout: 1s
-      validate:
-        - title: Response is valid
-          chai: \${expect($.response.code).to.equal(1)}
-        - title: Response is valid
-          chai: \${$.response.code.should.equals(1)}
-        - title: Response is valid
-          chai: \${assert.equal($.response.code,1)}
+      steps:
+        - yas-grpc/Call:
+            title: Test gRPC call
+            proto: ${join(__dirname, '../proto/server.proto')}
+            protoOptions: 
+              keepCase: true
+              longs: String
+              enums: String
+              defaults: true
+              oneofs: true
+            package: user
+            service: UserService
+            method: GetUsers
+            address: 0.0.0.0:5000
+            request: {
+              "name": "thanh"
+            }
+            timeout: 1s
+            validate:
+              - title: Response is valid
+                chai: \${expect($.response.code).to.equal(1)}
+              - title: Response is valid
+                chai: \${$.response.code.should.equals(1)}
+              - title: Response is valid
+                chai: \${expect($.response.code).to.equal(1)}
 
-  - yas-grpc/Call:
-      async: true
-      title: Test gRPC call
-      proto: ${join(__dirname, '../proto/server.proto')}
-      protoOptions: 
-        keepCase: true
-        longs: String
-        enums: String
-        defaults: true
-        oneofs: true
-      package: user
-      service: UserService
-      method: GetCustomers
-      address: 0.0.0.0:5000
-      request: {
-        "name": "thanh"
-      }
-      timeout: 1s
-      validate:
-        - title: Response is valid
-          chai: \${expect($.response.code).to.equal(10)}
+        - yas-grpc/Call:
+            title: Test gRPC call
+            proto: ${join(__dirname, '../proto/server.proto')}
+            protoOptions: 
+              keepCase: true
+              longs: String
+              enums: String
+              defaults: true
+              oneofs: true
+            package: user
+            service: UserService
+            method: GetCustomers
+            address: 0.0.0.0:5000
+            request: {
+              "name": "thanh"
+            }
+            timeout: 1s
+            validate:
+              - title: Response is valid
+                chai: \${expect($.response.code).to.equal(10)}
 `)
 
     expect(existsSync(`${join(__dirname, 'grpc_document_details.md')}`)).toBe(true)
     const cnt = readFileSync(`${join(__dirname, 'grpc_document_details.md')}`).toString()
     expect(cnt).toContain('Test gRPC call')
     expect(cnt).not.toContain('This is not documented')
-  }, 60000)
+  })
 
 })

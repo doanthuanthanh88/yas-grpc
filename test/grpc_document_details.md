@@ -1,16 +1,16 @@
 # User gRPC Service
 Demo CRUD gRPC to generate to markdown document
 > Developed by [Doan Thuan Thanh](mailto:doanthuanthanh88@gmail.com)  
-> Updated at 3/30/2022, 8:47:45 AM  
+> Updated at 4/4/2022, 11:14:05 AM  
 
-| | Title | Package | Target |  
-|---|---|---|---|  
+| | Title | |  
+|---|---|---|  
 | |DEFAULT (1) | |
-|**1**|[This is default doc](#This%20is%20default%20doc)| user | UserService.GetUsers() | 
+|**1**|[This is default doc](#This%20is%20default%20doc)| user/UserService.GetUsers() | 
 | |RETURNS (1) | |
-|**1**|[Test gRPC call](#Test%20gRPC%20call)| user | UserService.GetUsers() | 
+|**1**|[Test gRPC call](#Test%20gRPC%20call)| user/UserService.GetUsers() | 
 | |USER (1) | |
-|**1**|[Test gRPC call](#Test%20gRPC%20call)| user | UserService.GetUsers() | 
+|**1**|[Test gRPC call](#Test%20gRPC%20call)| user/UserService.GetUsers() | 
   
 
 ---

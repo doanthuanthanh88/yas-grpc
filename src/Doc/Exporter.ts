@@ -12,16 +12,16 @@ export class Exporter implements IExporter<Call> {
   constructor(private datasource: IFileAdapter, public md: MD) {
   }
 
-  export(calls: Call[]) {
+  async export(calls: Call[]) {
     const mdMenu = [`# ${this.md.title || Scenario.Instance.title}`, `${this.md.description || Scenario.Instance.description || ''}`];
-    const mdDetails = [];
+    const mdDetails = [] as string[];
 
     if (this.md.signature) {
       mdMenu.push(`> Developed by ${this.md.signature}  `)
     }
     mdMenu.push(`> Updated at ${new Date().toLocaleString()}  `)
 
-    mdMenu.push('', `| | Title | Package | Target |  `, `|---|---|---|---|  `)
+    mdMenu.push('', `| | Title | |  `, `|---|---|---|  `)
     calls.sort((a, b) => a.title > b.title ? 1 : -1)
 
     const tags = calls.reduce((tags, call) => {
@@ -30,12 +30,12 @@ export class Exporter implements IExporter<Call> {
         tags[tagName].push(call)
       })
       return tags
-    }, {})
+    }, {} as { [key: string]: Call[] })
 
     Object.keys(tags).sort().forEach(tagName => {
       mdMenu.push(`| |${tagName.trim()} (${tags[tagName].length}) | |`)
       tags[tagName].forEach((call, i) => {
-        mdMenu.push(`|**${i + 1}**|[${call.title}](#${escape(call.title)})| ${call.package} | ${call.service}.${call.method}() | `)
+        mdMenu.push(`|**${i + 1}**|[${call.title}](#${escape(call.title)})| ${call.uri} | `)
       })
     })
     calls.forEach(call => {
@@ -129,14 +129,14 @@ ${this.objectToMDType(call.response)}
 
     })
 
-    this.datasource.write([...mdMenu, '  ', ...mdDetails, '  '].join('\n'));
+    await this.datasource.write([...mdMenu, '  ', ...mdDetails, '  '].join('\n'));
   }
 
-  private objectToMDType(obj) {
+  private objectToMDType(obj: any) {
     const md = []
     md.push(`| Name | Type |`)
     md.push(`| --- | --- |`)
-    this.objectToTypes({ '@ROOT': obj }).forEach(info => {
+    this.objectToTypes({ '@ROOT': obj }).forEach((info: any) => {
       md.push(...this.toMDString(info))
     })
     return md.length > 2 ? md.join('\n') : ''
@@ -146,7 +146,7 @@ ${this.objectToMDType(call.response)}
     const md = []
     md.push(`| ${info.space} \`${info.name}\` | ${Array.from(info.types).join(', ')} |`)
     if (info.childs.length) {
-      info.childs.forEach(child => {
+      info.childs.forEach((child: any) => {
         md.push(...this.toMDString(child))
       })
     }
@@ -155,7 +155,7 @@ ${this.objectToMDType(call.response)}
 
   private objectToTypes(obj: any, space = '') {
     if (Array.isArray(obj)) {
-      const arr = []
+      const arr = [] as any[]
       obj.forEach(o => {
         arr.push(...this.objectToTypes(o, space))
       })

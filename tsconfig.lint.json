@@ -1,0 +1,21 @@
+{
+  "extends": "./tsconfig.base.json",
+  "compilerOptions": {
+    "watch": true,
+    "strict": true,
+    "noEmit": true,
+    "strictPropertyInitialization": false,
+    "paths": {
+      "@app/*": [
+        "./src/*"
+      ],
+      "@test/*": [
+        "./test/*"
+      ]
+    }
+  },
+  "include": [
+    "src",
+    "test"
+  ]
+}

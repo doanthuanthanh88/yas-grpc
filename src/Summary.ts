@@ -1,8 +1,9 @@
 import chalk from "chalk"
 import merge from "lodash.merge"
 import { ElementProxy } from "yaml-scene/src/elements/ElementProxy"
-import { TimeUtils } from "yaml-scene/src/utils/TimeUtils"
+import { IElement } from "yaml-scene/src/elements/IElement"
 import { Scenario } from "yaml-scene/src/singleton/Scenario"
+import { TimeUtils } from "yaml-scene/src/utils/TimeUtils"
 
 /**
  * @guide
@@ -16,7 +17,9 @@ import { Scenario } from "yaml-scene/src/singleton/Scenario"
  * @end
  */
 export default class Summary {
-  proxy: ElementProxy<Summary>
+  proxy: ElementProxy<this>
+  $$: IElement
+  $: this
 
   title: string
 

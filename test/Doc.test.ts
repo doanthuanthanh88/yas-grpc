@@ -96,6 +96,6 @@ steps:
     const cnt = readFileSync(`${join(__dirname, 'grpc_document_details.md')}`).toString()
     expect(cnt).toContain('Test gRPC call')
     expect(cnt).not.toContain('This is not documented')
-  }, 60000)
+  })
 
 })

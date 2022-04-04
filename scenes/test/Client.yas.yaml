@@ -1,22 +1,26 @@
-- yas-grpc/Call:
-    title: Test gRPC call
-    proto: ../../proto/server.proto
-    doc: true
-    protoOptions:
-      keepCase: true
-      longs: String
-      enums: String
-      defaults: true
-      oneofs: true
-    package: user
-    service: UserService
-    method: GetUsers
-    address: 127.0.0.1:5000
-    request: { "name": "thanh" }
-    timeout: 1s
-    validate:
-      - title: Response is valid
-        chai: \${expect($.response.code).to.equal(1)}
+logLevel: debug
+extensions:
+  yas-grpc: ../../dist
+steps:
+  - yas-grpc/Call:
+      title: Test gRPC call
+      proto: ../../proto/server.proto
+      doc: true
+      protoOptions:
+        keepCase: true
+        longs: String
+        enums: String
+        defaults: true
+        oneofs: true
+      package: user
+      service: UserService
+      method: GetUsers
+      address: 127.0.0.1:5000
+      request: { "name": "thanh" }
+      timeout: 1s
+      validate:
+        - title: Response is valid
+          chai: \${expect($.response.code).to.equal(1)}
 
-- !fragment ./Summary.yas.yaml
-- !fragment ./Doc.yas.yaml
+  - Fragment: ./Summary.yas.yaml
+  - Fragment: ./Doc.yas.yaml

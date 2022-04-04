@@ -11,10 +11,11 @@
   "scripts": {
     "install:dist": "yarn install --production --modules-folder ./dist/node_modules",
     "dev": "npx nodemon --watch src --watch test --ext .ts --exec 'node -r ts-node/register -r ./bin/tsconfig-paths-bootstrap.js --inspect-brk src/index.ts'",
-    "test": "npx jest --detectOpenHandles",
-    "test:debug": "npx --node-options=\"--inspect-brk\" jest --detectOpenHandles",
+    "test": "npx jest --runInBand",
+    "test:debug": "npx --node-options=\"--inspect-brk\" jest --runInBand",
     "doc": "npx yaml-scene scenes/guide.yas.yaml",
     "prebuild": "yarn clean",
+    "lint": "tsc --project tsconfig.lint.json",
     "build": "tsc --project tsconfig.build.json",
     "postbuild": "node bin/tsconfig && node bin/update_package",
     "clean": "rm -rf dist",
@@ -24,22 +25,24 @@
   },
   "preferGlobal": true,
   "dependencies": {
-    "@grpc/grpc-js": "^1.3.2",
-    "@grpc/proto-loader": "^0.6.2",
-    "lodash.clonedeep": "^4.5.0",
+    "@grpc/grpc-js": "^1.6.1",
+    "@grpc/proto-loader": "^0.6.9",
     "lodash.merge": "^4.6.2"
   },
   "peerDependencies": {
-    "yaml-scene": "^1.1.0"
+    "yaml-scene": "^1.1.9"
   },
   "devDependencies": {
     "@types/jest": "^27.4.1",
+    "@types/lodash.merge": "^4.6.6",
     "@types/node": "^14.14.6",
+    "chalk": "^4.1.2",
     "jest": "^27.5.1",
     "ts-jest": "^27.1.3",
     "ts-node": "^9.1.1",
     "typescript": "^4.3.5",
-    "yaml-scene": "^1.1.0"
+    "weak-napi": "^2.0.2",
+    "yaml-scene": "^1.1.9"
   },
   "author": {
     "name": "Đoàn Thuận Thành",

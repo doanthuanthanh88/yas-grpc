@@ -9,7 +9,7 @@ function portIsUsed(host: string, port: number) {
     socket.on("connect", function () {
       resolve(true);
     });
-    socket.on("error", function (err) {
+    socket.on("error", function (err: any) {
       if (err['code'] !== "ECONNREFUSED") {
         reject(false);
       } else {
@@ -19,15 +19,12 @@ function portIsUsed(host: string, port: number) {
   })
 }
 
-describe('gRPC', () => {
-
-  test('Test gRPC Server', async () => {
-    await Simulator.Run(`
+test('Test gRPC Server', async () => {
+  await Simulator.Run(`
 extensions:
   yas-grpc: ${join(__dirname, '../src')}
 steps:
   - yas-grpc/Server:
-      async: true
       title: Start mock gRPC server
       address: 0.0.0.0:5000
       timeout: 5s
@@ -53,9 +50,7 @@ steps:
                 }, {
                   age: 10
                 })
-  - Delay: 1s
 `)
-    expect(await portIsUsed('0.0.0.0', 5000)).toEqual(true)
-  }, 60000)
-
+  expect(await portIsUsed('0.0.0.0', 5000)).toEqual(true)
 })
+
