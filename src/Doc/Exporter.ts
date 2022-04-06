@@ -9,7 +9,11 @@ import MD from './MD';
 
 export class Exporter implements IExporter<Call> {
 
-  constructor(private datasource: IFileAdapter, public md: MD) {
+  constructor(private writer: IFileAdapter, public md: MD) {
+  }
+
+  getHashLink(...txts: string[]) {
+    return escape(this.md.prefixHashLink + txts.join('-')).toLowerCase()
   }
 
   async export(calls: Call[]) {
@@ -40,7 +44,7 @@ export class Exporter implements IExporter<Call> {
     })
     calls.forEach(call => {
       const details = []
-      details.push('', '---', '', `## [${call.title}](#) <a name="${escape(call.title)}"></a>
+      details.push('', '---', '', `<a id="${this.getHashLink(call.title)}" name="${this.getHashLink(call.title)}"></a>`, `## [${call.title}](#)
 ${call.description || ''}`, '')
 
       details.push(`
@@ -129,7 +133,7 @@ ${this.objectToMDType(call.response)}
 
     })
 
-    await this.datasource.write([...mdMenu, '  ', ...mdDetails, '  '].join('\n'));
+    await this.writer.write([...mdMenu, '  ', ...mdDetails, '  '].join('\n'));
   }
 
   private objectToMDType(obj: any) {
