@@ -4,8 +4,13 @@
     "declaration": true,
     "removeComments": true,
     "sourceMap": true,
-    "resolveJsonModule": true,
-    "rootDir": "src"
+    "skipLibCheck": true,
+    "skipDefaultLibCheck": true,
+    "paths": {
+      "@app/*": [
+        "./src/*"
+      ]
+    }
   },
   "include": [
     "src"

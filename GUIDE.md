@@ -3,31 +3,33 @@
 | Element | Description |  
 |---|---|  
 | GRPC | --- |
-|[yas-grpc/Call](#yas-grpc%2FCall)| Make a gGPC call to another ...|  
-|[yas-grpc/Server](#yas-grpc%2FServer)| Create a gRPC server to mock data ...|  
-|[yas-grpc/Doc/MD](#yas-grpc%2FDoc%2FMD)| Document all of yas-grpc/Call which got property "doc" is true or { tags: [] } ...|  
-|[yas-grpc/Summary](#yas-grpc%2FSummary)| Summary after all of gRPC calls in scene executed done. (It's should be the last step) ...|  
+|[yas-grpc/Call](#user-content-grpc-yas-grpc%2fcall)| Make a gGPC call to another ...|  
+|[yas-grpc/Server](#user-content-grpc-yas-grpc%2fserver)| Create a gRPC server to mock data ...|  
+|[yas-grpc/Doc/MD](#user-content-grpc-yas-grpc%2fdoc%2fmd)| Document all of yas-grpc/Call which got property "doc" is true or { tags: [] } ...|  
+|[yas-grpc/Summary](#user-content-grpc-yas-grpc%2fsummary)| Summary after all of gRPC calls in scene executed done. (It's should be the last step) ...|  
   
   
 # Details
-## yas-grpc/Call <a name="yas-grpc/Call"></a>
+<a id="user-content-grpc-yas-grpc%2fcall" name="user-content-grpc-yas-grpc%2fcall"></a>
+## yas-grpc/Call
+`gRPC`  
 Make a gGPC call to another  
 ```yaml
 - yas-grpc/Call
     title: Get list users which filter by name
-    description: Test on dev environment        
+    description: Test on dev environment
     channelOptions:                                   # gRPC Call options
     doc: true                                         # Document it. Reference to "yas-grpc/Doc/MD"
-    doc: 
+    doc:
       tags: [USER]
 
     proto: ./proto/server.proto                       # File proto
 
     protoOptions:                                     # Protobuf options
 
-    package: user                                   
-    service: UserService                            
-    method: GetUsers                                
+    package: user
+    service: UserService
+    method: GetUsers
     address: 0.0.0.0:5000                             # gRPC Server which send a call to
     metadata: {                                       # Request metadata
       service: "A"
@@ -78,13 +80,16 @@ Make a gGPC call to another
   - 'includeDirs': []
   - ...
 </details>
+<br/>
 
-## yas-grpc/Server <a name="yas-grpc/Server"></a>
+<a id="user-content-grpc-yas-grpc%2fserver" name="user-content-grpc-yas-grpc%2fserver"></a>
+## yas-grpc/Server
+`gRPC`  
 Create a gRPC server to mock data  
 ```yaml
 - yas-grpc/Server
     title: Server to serve list users
-    description: Test on dev environment        
+    description: Test on dev environment
     channelOptions:                                 # gRPC Server options
 
     address: 0.0.0.0:5000                           # gRPC Server which send a call to
@@ -102,8 +107,8 @@ Create a gRPC server to mock data
               data: [{name: 'thanh', age: 1}]
             }
             GetCustomers: !function |               # Handle code which handle request and response data
-              // _: this, 
-              // __: this.proxy, 
+              // _: this,
+              // __: this.proxy,
               // request: Request input
               // metadata: Request metadata
               // ctx: gRPC context
@@ -154,8 +159,11 @@ Create a gRPC server to mock data
   - 'includeDirs': []
   - ...
 </details>
+<br/>
 
-## yas-grpc/Doc/MD <a name="yas-grpc/Doc/MD"></a>
+<a id="user-content-grpc-yas-grpc%2fdoc%2fmd" name="user-content-grpc-yas-grpc%2fdoc%2fmd"></a>
+## yas-grpc/Doc/MD
+`gRPC`  
 Document all of yas-grpc/Call which got property "doc" is true or { tags: [] }  
 
 ```yaml
@@ -164,10 +172,14 @@ Document all of yas-grpc/Call which got property "doc" is true or { tags: [] }
     description: Demo CRUD gRPC to generate to markdown document
     signature: "[Doan Thuan Thanh](mailto:doanthuanthanh88@gmail.com)"
     outFile: ./grpc_document_details.md
+    prefixHashLink:                        # Default is `user-content-` for github
 ```
 
+<br/>
 
-## yas-grpc/Summary <a name="yas-grpc/Summary"></a>
+<a id="user-content-grpc-yas-grpc%2fsummary" name="user-content-grpc-yas-grpc%2fsummary"></a>
+## yas-grpc/Summary
+`gRPC`  
 Summary after all of gRPC calls in scene executed done. (It's should be the last step)  
 
 ```yaml
@@ -175,5 +187,6 @@ Summary after all of gRPC calls in scene executed done. (It's should be the last
     title: Testing result
 ```
 
+<br/>
 
   

@@ -10,9 +10,9 @@
   ],
   "scripts": {
     "install:dist": "yarn install --production --modules-folder ./dist/node_modules",
-    "dev": "npx nodemon --watch src --watch test --ext .ts --exec 'node -r ts-node/register -r ./bin/tsconfig-paths-bootstrap.js --inspect-brk src/index.ts'",
-    "test": "npx jest --runInBand",
-    "test:debug": "npx --node-options=\"--inspect-brk\" jest --runInBand",
+    "dev": "ts-node-dev --clear --rs --project tsconfig.json --ignore-watch [.*] --respawn --transpile-only -r tsconfig-paths/register --inspect-brk -- src/index.ts",
+    "test": "jest",
+    "test:debug": "node --inspect-brk node_modules/.bin/jest",
     "doc": "npx yaml-scene scenes/guide.yas.yaml",
     "prebuild": "yarn clean",
     "lint": "tsc --project tsconfig.lint.json",
@@ -20,7 +20,7 @@
     "postbuild": "node bin/tsconfig && node bin/update_package",
     "clean": "rm -rf dist",
     "prenewtag": "yarn test && yarn build",
-    "newtag": "npx yaml-scene ./scenes/version.yas.yaml",
+    "newtag": "npx yaml-scene scenes/version.yas.yaml",
     "postnewtag": "yarn clean"
   },
   "preferGlobal": true,
@@ -39,7 +39,8 @@
     "chalk": "^4.1.2",
     "jest": "^27.5.1",
     "ts-jest": "^27.1.3",
-    "ts-node": "^9.1.1",
+    "ts-node-dev": "^1.1.8",
+    "tsconfig-paths": "^3.14.1",
     "typescript": "^4.3.5",
     "weak-napi": "^2.0.2",
     "yaml-scene": "^1.1.9"

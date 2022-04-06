@@ -27,7 +27,7 @@ function handleFile(p, ps) {
       if (err) return reject(err)
       let cnt = data.toString()
       for (let k in m) {
-        cnt = cnt.replace(new RegExp(`(['"\`])${k}/`, 'g'), `$1${m[k]}/`)
+        cnt = cnt.replace(new RegExp(`(((require\\()|(from ))['"\`])${k}`, 'g'), `$1${m[k]}/`)
       }
       fs.writeFile(ps, cnt, (err) => {
         if (err) return reject(err)
@@ -41,9 +41,10 @@ const jobs = []
 
 function replace(p) {
   fs.readdirSync(p).forEach(f => {
+    if (f.includes('node_modules/')) return
     const ps = path.join(p, f)
     if (fs.lstatSync(ps).isDirectory()) {
-      if (f !== 'node_modules') replace(ps)
+      replace(ps)
     } else if (f.endsWith('.js') || f.endsWith('.ts')) {
       jobs.push(handleFile(p, ps))
     }
@@ -53,5 +54,5 @@ function replace(p) {
 replace(path.resolve(dist))
 
 Promise.all(jobs).then((ps) => {
-  console.log(`Replaced to resolve ${ps.length} modules`)
+  console.log(`Replaced to resolve ${ps.length} files`)
 }).catch(console.err)
