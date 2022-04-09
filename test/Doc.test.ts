@@ -13,7 +13,7 @@ steps:
       async: true
       title: Start mock gRPC server
       address: 0.0.0.0:5000
-      timeout: 3s
+      timeout: 5s
       packages:
         user:
           proto: ${join(__dirname, '../proto/server.proto')}
@@ -32,26 +32,32 @@ steps:
   - Group:
       async: true
       steps:
+        - Templates:
+            - yas-grpc/Call:
+                ->: base
+                proto: ${join(__dirname, '../proto/server.proto')}
+                protoOptions: 
+                  keepCase: true
+                  longs: String
+                  enums: String
+                  defaults: true
+                  oneofs: true
+                package: user
+                service: UserService
+                address: 0.0.0.0:5000
+                timeout: 1s
+
         - yas-grpc/Call:
             doc: 
               tags: [RETURNS, USER]
+            <-: base
             ->: test
             title: Test gRPC call
             proto: ${join(__dirname, '../proto/server.proto')}
-            protoOptions: 
-              keepCase: true
-              longs: String
-              enums: String
-              defaults: true
-              oneofs: true
-            package: user
-            service: UserService
             method: GetUsers
-            address: 0.0.0.0:5000
             request: {
               "name": "thanh"
             }
-            timeout: 1s
             validate:
               - title: Response is valid
                 chai: \${expect($.response.code).to.equal(1)}
@@ -62,22 +68,12 @@ steps:
             doc: true
 
         - yas-grpc/Call:
+            <-: base
             title: This is not documented
-            proto: ${join(__dirname, '../proto/server.proto')}
-            protoOptions: 
-              keepCase: true
-              longs: String
-              enums: String
-              defaults: true
-              oneofs: true
-            package: user
-            service: UserService
             method: GetUsers
-            address: 0.0.0.0:5000
             request: {
               "name": "thanh"
             }
-            timeout: 1s
             validate:
               - title: Response is valid
                 chai: \${expect($.response.code).to.equal(1)}

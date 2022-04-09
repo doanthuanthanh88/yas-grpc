@@ -2,10 +2,8 @@ vars:
   address: 0.0.0.0:5000
 steps:
   - yas-grpc/Server:
-      async: true
       title: Start mock gRPC server
       address: ${address}
-      timeout: 3s
       packages:
         user:
           proto: https://raw.githubusercontent.com/doanthuanthanh88/yas-grpc/main/proto/server.proto

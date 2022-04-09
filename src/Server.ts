@@ -5,8 +5,10 @@ import merge from "lodash.merge"
 import { ElementFactory } from 'yaml-scene/src/elements/ElementFactory'
 import { ElementProxy } from "yaml-scene/src/elements/ElementProxy"
 import { IElement } from "yaml-scene/src/elements/IElement"
+import Pause from "yaml-scene/src/elements/Pause"
 import { Functional } from 'yaml-scene/src/tags/model/Functional'
 import { TimeUtils } from "yaml-scene/src/utils/TimeUtils"
+import { ProtoManager } from './utils/ProtoManager'
 
 /**
  * @guide 
@@ -26,7 +28,8 @@ import { TimeUtils } from "yaml-scene/src/utils/TimeUtils"
 
     packages:                                       # Declare packages in proto file
       user:                                         # Package name
-        proto: ./proto/server.proto                 # File proto
+        proto: ./proto/server.proto                 # Proto is a local file
+        proto: https://raw.../proto/server.proto    # Proto is a link
 
         protoOptions:                               # Protobuf options
 
@@ -128,18 +131,18 @@ export default class Server implements IElement {
     this._server = new GRPCServer(this.channelOptions)
     for (const packageName in this.packages) {
       const packageConfig = this.packages[packageName]
-      // Suggested options for similarity to existing grpc.load behavior
-      packageConfig.proto = this.proxy.resolvePath(packageConfig.proto)
+      packageConfig.proto = await ProtoManager.Instance.getProtoPath(this.proxy.resolvePath(packageConfig.proto))
       packageConfig.protoOptions?.includeDirs?.forEach((e, i) => packageConfig.protoOptions.includeDirs[i] = this.proxy.resolvePath(e))
+      const opts = merge({
+        keepCase: true,
+        longs: String,
+        enums: String,
+        defaults: true,
+        oneofs: true
+      }, packageConfig.protoOptions || {})
       const packageDefinition = loadSync(
         packageConfig.proto,
-        merge({
-          keepCase: true,
-          longs: String,
-          enums: String,
-          defaults: true,
-          oneofs: true
-        }, packageConfig.protoOptions || {})
+        opts
       )
       const protoDescriptor = loadPackageDefinition(packageDefinition);
       const pack = protoDescriptor[packageName];
@@ -189,42 +192,29 @@ export default class Server implements IElement {
 
   private start() {
     return new Promise((resolve, reject) => {
-      this.proxy.logger.debug(chalk.green(`gRPC Server is listening at ${this.address}`))
       this._server.bindAsync(`${this.address}`, ServerCredentials.createInsecure(), async (err: Error) => {
-        if (err) reject(err)
+        if (err) return reject(err)
         this._server.start()
-        const pause = ElementFactory.CreateElement('Pause')
+        const pause = ElementFactory.CreateTheElement<Pause>(Pause)
         pause.init({
-          title: `Enter to stop the gRPC service "${this.title || ''}" !`,
+          title: `Stop gRPC server at "${this.address}"`,
           time: this.timeout
         })
         await pause.prepare()
         await pause.exec()
         await pause.dispose()
-        try {
-          await this.stop()
-          resolve(undefined)
-        } catch (err) {
-          reject(err)
-        }
+        await this.stop()
+        resolve(undefined)
       })
     })
   }
 
   private async stop() {
-    if (this._server) {
-      await new Promise((resolve, reject) => {
-        this._server.tryShutdown(err => {
-          if (err) return reject(err)
-          this._server = undefined
-          resolve(undefined)
-        });
-      })
-    }
+    this._server?.forceShutdown()
   }
 
-  dispose() {
-    this.stop()
+  async dispose() {
+    await this.stop()
   }
 
 }

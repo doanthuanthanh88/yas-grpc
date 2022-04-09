@@ -2,13 +2,17 @@ import { ChannelOptions, credentials, loadPackageDefinition, Metadata } from '@g
 import { ServiceClient } from '@grpc/grpc-js/build/src/make-client'
 import { loadSync, Options } from '@grpc/proto-loader'
 import chalk from "chalk"
+import { readFileSync } from 'fs'
 import merge from "lodash.merge"
+import { basename } from 'path'
 import { ElementFactory } from "yaml-scene/src/elements/ElementFactory"
 import { ElementProxy } from "yaml-scene/src/elements/ElementProxy"
 import { IElement } from "yaml-scene/src/elements/IElement"
 import Validate from "yaml-scene/src/elements/Validate"
+import { LogLevel } from 'yaml-scene/src/singleton/LoggerManager'
 import { Scenario } from "yaml-scene/src/singleton/Scenario"
 import { TimeUtils } from 'yaml-scene/src/utils/TimeUtils'
+import { ProtoManager } from './utils/ProtoManager'
 
 /**
  * @guide
@@ -27,7 +31,8 @@ import { TimeUtils } from 'yaml-scene/src/utils/TimeUtils'
     doc: 
       tags: [USER]
 
-    proto: ./proto/server.proto                       # File proto
+    proto: ./proto/server.proto                       # Proto is a local file
+    proto: https://raw.../proto/server.proto          # Proto is a link
 
     protoOptions:                                     # Protobuf options
 
@@ -90,6 +95,7 @@ export default class Call implements IElement {
   proxy: ElementProxy<this>
   $$: IElement
   $: this
+  logLevel?: LogLevel
 
   title: string
   description: string
@@ -123,44 +129,46 @@ export default class Call implements IElement {
     return `${this.package}/${this.service}.${this.method}()`
   }
 
+  get protoName() {
+    return basename(this.proto) || '.proto'
+  }
+
+  get protoContent() {
+    return readFileSync(this.proto).toString()
+  }
+
   init(props: any) {
-    merge(this, {
-      protoOptions: {
-        keepCase: true,
-        longs: String,
-        enums: String,
-        defaults: true,
-        oneofs: true
-      }
-    }, {
-      ...props,
-      validate: props.validate?.map(v => {
-        const _v = ElementFactory.CreateElement<Validate>('Validate')
-        _v.changeLogLevel(props.logLevel)
-        _v.init(v)
-        return _v
-      })
-    })
+    merge(this, props)
   }
 
   async prepare() {
     await this.proxy.applyVars(this, 'title', 'description', 'address', 'timeout', 'package', 'service', 'method', 'proto', 'protoOptions', 'channelOptions')
-    this.proto = this.proxy.resolvePath(this.proto)
-    this.protoOptions?.includeDirs?.forEach((e, i) => this.protoOptions.includeDirs[i] = this.proxy.resolvePath(e))
     if (this.timeout) this.timeout = TimeUtils.GetMsTime(this.timeout)
-    this.validate?.forEach(v => {
-      v.element.$ = this.$
-      v.element.$$ = this.$$
+    this.protoOptions?.includeDirs?.forEach((e, i) => this.protoOptions.includeDirs[i] = this.proxy.resolvePath(e))
+    this.validate = this.validate?.map(v => {
+      const _v = ElementFactory.CreateTheElement<Validate>(Validate)
+      _v.init(v)
+      _v.changeLogLevel(this.logLevel)
+      _v.element.$ = this.$
+      _v.element.$$ = this.$$
+      return _v
     })
-    if (!this._client) {
-      const packageDefinition = loadSync(
-        this.proto,
-        this.protoOptions
-      )
-      const protoDescriptor = loadPackageDefinition(packageDefinition);
-      const pack = protoDescriptor[this.package];
-      this._client = new pack[this.service](`${this.address}`, credentials.createInsecure(), this.channelOptions);
-    }
+    this.proto = await ProtoManager.Instance.getProtoPath(this.proxy.resolvePath(this.proto))
+    this.protoOptions?.includeDirs?.forEach((e, i) => this.protoOptions.includeDirs[i] = this.proxy.resolvePath(e))
+    const opts = merge({
+      keepCase: true,
+      longs: String,
+      enums: String,
+      defaults: true,
+      oneofs: true
+    }, this.protoOptions || {})
+    const packageDefinition = loadSync(
+      this.proto,
+      opts
+    )
+    const protoDescriptor = loadPackageDefinition(packageDefinition);
+    const pack = protoDescriptor[this.package];
+    this._client = new pack[this.service](`${this.address}`, credentials.createInsecure(), this.channelOptions);
   }
 
   async exec() {
@@ -219,7 +227,6 @@ export default class Call implements IElement {
   async dispose() {
     if (this.validate?.length) await Promise.all(this.validate.map(v => v.dispose()))
     this.cancel()
-    this._client = undefined
   }
 
   private printLog() {

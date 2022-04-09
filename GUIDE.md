@@ -23,7 +23,8 @@ Make a gGPC call to another
     doc:
       tags: [USER]
 
-    proto: ./proto/server.proto                       # File proto
+    proto: ./proto/server.proto                       # Proto is a local file
+    proto: https://raw.../proto/server.proto          # Proto is a link
 
     protoOptions:                                     # Protobuf options
 
@@ -96,7 +97,8 @@ Create a gRPC server to mock data
 
     packages:                                       # Declare packages in proto file
       user:                                         # Package name
-        proto: ./proto/server.proto                 # File proto
+        proto: ./proto/server.proto                 # Proto is a local file
+        proto: https://raw.../proto/server.proto    # Proto is a link
 
         protoOptions:                               # Protobuf options
 

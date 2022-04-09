@@ -1,4 +1,3 @@
-import { readFileSync } from 'fs';
 import { basename } from 'path';
 import { escape } from 'querystring';
 import { IFileAdapter } from 'yaml-scene/src/elements/File/adapter/IFileAdapter';
@@ -17,7 +16,7 @@ export class Exporter implements IExporter<Call> {
   }
 
   async export(calls: Call[]) {
-    const mdMenu = [`# ${this.md.title || Scenario.Instance.title}`, `${this.md.description || Scenario.Instance.description || ''}`];
+    const mdMenu = [`# ${this.md.title || Scenario.Instance.element.title}`, `${this.md.description || Scenario.Instance.element.description || ''}`];
     const mdDetails = [] as string[];
 
     if (this.md.signature) {
@@ -56,10 +55,10 @@ Method: \`${call.method}\`
 
 `, '')
       details.push(`<details>
-<summary>${basename(call.proto)}</summary>
+<summary>${basename(call.protoName)}</summary>
 
 \`\`\`protobuf
-${readFileSync(call.proto).toString()}
+${call.protoContent}
 \`\`\`
 </details>
 `)

@@ -4,8 +4,6 @@
     "declaration": true,
     "removeComments": true,
     "sourceMap": true,
-    "skipLibCheck": true,
-    "skipDefaultLibCheck": true,
     "paths": {
       "@app/*": [
         "./src/*"
