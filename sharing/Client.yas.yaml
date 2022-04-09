@@ -1,0 +1,38 @@
+vars:
+  address: 0.0.0.0:5000
+steps:
+  - Templates:
+      - yas-grpc/Call:
+          ->: base
+          proto: https://raw.githubusercontent.com/doanthuanthanh88/yas-grpc/main/proto/server.proto
+          protoOptions:
+            keepCase: true
+            longs: String
+            enums: String
+            defaults: true
+            oneofs: true
+          package: user
+          service: UserService
+          address: ${address}
+          timeout: 1s
+  - yas-grpc/Call:
+      <-: base
+      title: Test gRPC call
+      method: GetUsers
+      request: { "name": "thanh" }
+      validate:
+        - title: Response is valid
+          chai: ${expect($.response.code).to.equal(1)}
+        - title: Response is valid
+          chai: ${$.response.code.should.equals(1)}
+        - title: Response is valid
+          chai: ${expect($.response.code).to.equal(1)}
+
+  - yas-grpc/Call:
+      <-: base
+      title: Test gRPC call
+      method: GetCustomers
+      request: { "name": "thanh" }
+      validate:
+        - title: Response is valid
+          chai: ${expect($.response.code).to.equal(10)}

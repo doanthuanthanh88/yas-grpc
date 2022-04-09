@@ -11,6 +11,9 @@ Support grpc call, grpc document and grpc mock server
   - Build handler for yourself by code
 - Generate gRPC document
 
+## Sharing
+1. [Create gRPC Server](./sharing/README.md)
+
 ## Details document
 > [Wiki Pages](https://github.com/doanthuanthanh88/yas-grpc/wiki)
 

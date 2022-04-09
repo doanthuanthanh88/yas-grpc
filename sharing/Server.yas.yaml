@@ -1,0 +1,25 @@
+vars:
+  address: 0.0.0.0:5000
+steps:
+  - yas-grpc/Server:
+      async: true
+      title: Start mock gRPC server
+      address: ${address}
+      timeout: 3s
+      packages:
+        user:
+          proto: https://raw.githubusercontent.com/doanthuanthanh88/yas-grpc/main/proto/server.proto
+          protoOptions:
+            keepCase: true
+            longs: String
+            enums: String
+            defaults: true
+            oneofs: true
+          services:
+            UserService:
+              GetUsers: { code: 1, data: [{ name: "thanh", age: 1 }] }
+              GetCustomers: !function |
+                return {
+                  code: 10,
+                  data: [{name: 'thanh', age: 10}]
+                }
