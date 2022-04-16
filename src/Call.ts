@@ -14,8 +14,7 @@ import { Scenario } from "yaml-scene/src/singleton/Scenario"
 import { TimeUtils } from 'yaml-scene/src/utils/TimeUtils'
 import { ProtoManager } from './utils/ProtoManager'
 
-/**
- * @guide
+/*****
  * @name yas-grpc/Call
  * @description Make a gGPC call to another
  * @order 1
@@ -49,7 +48,7 @@ import { ProtoManager } from './utils/ProtoManager'
     timeout: 1s                                       # Request timeout
     validate:                                         # Validate response after request done. Reference to [Validate](https://github.com/doanthuanthanh88/yaml-scene/wiki#Validate)
       - title: Response is valid
-        chai: \${expect($.response.code).to.equal(1)} # `$.response` is the result after make a gRPC call
+        chai: ${expect($.response.code).to.equal(1)}  # `$.response` is the result after make a gRPC call
 ```
 
 <details>
@@ -89,7 +88,6 @@ import { ProtoManager } from './utils/ProtoManager'
   - 'includeDirs': []
   - ...
 </details>
- * @end
  */
 export default class Call implements IElement {
   proxy: ElementProxy<this>

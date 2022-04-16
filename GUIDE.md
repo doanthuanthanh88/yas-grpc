@@ -1,5 +1,6 @@
 # Document
-*Describe all of elements in tool. (meaning, how to use...)*
+Describe all of elements in tool. (meaning, how to use...)
+
 | Element | Description |  
 |---|---|  
 | GRPC | --- |
@@ -41,7 +42,7 @@ Make a gGPC call to another
     timeout: 1s                                       # Request timeout
     validate:                                         # Validate response after request done. Reference to [Validate](https://github.com/doanthuanthanh88/yaml-scene/wiki#Validate)
       - title: Response is valid
-        chai: \${expect($.response.code).to.equal(1)} # `$.response` is the result after make a gRPC call
+        chai: ${expect($.response.code).to.equal(1)}  # `$.response` is the result after make a gRPC call
 ```
 
 <details>
@@ -109,18 +110,18 @@ Create a gRPC server to mock data
               data: [{name: 'thanh', age: 1}]
             }
             GetCustomers: !function |               # Handle code which handle request and response data
-              // _: this,
-              // __: this.proxy,
-              // request: Request input
-              // metadata: Request metadata
-              // ctx: gRPC context
+              () {
+                // this.request: Request input
+                // this.metadata: Request metadata
+                // this.ctx: gRPC context
 
-              const merge = require('lodash.merge')
-              return merge({
-                name: request.name
-              }, {
-                age: 10
-              })
+                const merge = require('lodash.merge')
+                return merge({
+                  name: this.request.name
+                }, {
+                  age: 10
+                })
+              }
     timeout: 10s                                    # Server will shutdown after the time
 ```
 

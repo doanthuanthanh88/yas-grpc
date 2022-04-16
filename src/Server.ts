@@ -10,8 +10,7 @@ import { Functional } from 'yaml-scene/src/tags/model/Functional'
 import { TimeUtils } from "yaml-scene/src/utils/TimeUtils"
 import { ProtoManager } from './utils/ProtoManager'
 
-/**
- * @guide 
+/*****
  * @name yas-grpc/Server
  * @description Create a gRPC server to mock data
  * @order 2
@@ -40,18 +39,18 @@ import { ProtoManager } from './utils/ProtoManager'
               data: [{name: 'thanh', age: 1}]
             }
             GetCustomers: !function |               # Handle code which handle request and response data
-              // _: this, 
-              // __: this.proxy, 
-              // request: Request input
-              // metadata: Request metadata
-              // ctx: gRPC context
-
-              const merge = require('lodash.merge')
-              return merge({
-                name: request.name
-              }, {
-                age: 10
-              })
+              () {
+                // this.request: Request input
+                // this.metadata: Request metadata
+                // this.ctx: gRPC context
+                
+                const merge = require('lodash.merge')
+                return merge({
+                  name: this.request.name
+                }, {
+                  age: 10
+                })
+              }
     timeout: 10s                                    # Server will shutdown after the time
 ```
 
@@ -92,7 +91,6 @@ import { ProtoManager } from './utils/ProtoManager'
   - 'includeDirs': []
   - ...
 </details>
- * @end
  */
 export default class Server implements IElement {
   proxy: ElementProxy<this>
@@ -156,20 +154,22 @@ export default class Server implements IElement {
           let data = service[funcName]
           if (typeof data === 'function') {
             // Fix response data
+            const _handler = data as Function
             handler = async (ctx: any) => {
-              const rs = await data({ ctx, metadata: ctx.metadata, request: ctx.request, _: this, __: this.proxy })
-              ctx.call.sendUnaryMessage(null, rs)
+              const rs = await this.proxy.call(_handler, undefined, { ctx, metadata: ctx.metadata, request: ctx.request })
+              return ctx.call.sendUnaryMessage(null, rs)
             }
           } else if (data instanceof Functional) {
             // Manual handler response data
+            const _handler = data.getFunctionFromBody()
             handler = async (ctx: any) => {
-              const rs = await this.proxy.eval(data.toString(), { ctx, metadata: ctx.metadata, request: ctx.request });
-              ctx.call.sendUnaryMessage(null, rs)
+              const rs = await this.proxy.call(_handler, undefined, { ctx, metadata: ctx.metadata, request: ctx.request })
+              return ctx.call.sendUnaryMessage(null, rs)
             }
           } else {
             handler = async (ctx: any) => {
               const rs = await this.proxy.getVar(data, { ctx, metadata: ctx.metadata, request: ctx.request })
-              ctx.call.sendUnaryMessage(null, rs)
+              return ctx.call.sendUnaryMessage(null, rs)
             }
           }
           sum[funcName] = handler

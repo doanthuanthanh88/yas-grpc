@@ -17,7 +17,9 @@ steps:
             UserService:
               GetUsers: { code: 1, data: [{ name: "thanh", age: 1 }] }
               GetCustomers: !function |
-                return {
-                  code: 10,
-                  data: [{name: 'thanh', age: 10}]
+                () {
+                  return {
+                    code: 10,
+                    data: [{name: 'thanh', age: 10}]
+                  }
                 }

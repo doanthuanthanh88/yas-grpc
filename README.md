@@ -75,7 +75,7 @@ Create a gRPC server to mock data
             GetCustomers: !function |
               const merge = require('lodash.merge')
               return merge({
-                name: request.name
+                name: this.request.name
               }, {
                 age: 10
               })

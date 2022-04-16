@@ -9,8 +9,7 @@ import { TraceError } from "yaml-scene/src/utils/error/TraceError"
 import { TimeUtils } from "yaml-scene/src/utils/TimeUtils"
 import { Exporter } from "./Exporter"
 
-/**
- * @guide
+/*****
  * @name yas-grpc/Doc/MD
  * @description Document all of yas-grpc/Call which got property "doc" is true or { tags: [] }
  * @group gRPC
@@ -21,7 +20,6 @@ import { Exporter } from "./Exporter"
     signature: "[Doan Thuan Thanh](mailto:doanthuanthanh88@gmail.com)"
     outFile: ./grpc_document_details.md
     prefixHashLink:                        # Default is `user-content-` for github
- * @end
  */
 export default class MD {
   proxy: ElementProxy<this>

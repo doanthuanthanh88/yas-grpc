@@ -45,12 +45,14 @@ describe('Test gRPC Server', () => {
                   data: [{name: 'thanh', age: 1}]
                 }
                 GetCustomers: !function |
-                  const merge = require('lodash.merge')
-                  return merge({
-                    name: request.name
-                  }, {
-                    age: 10
-                  })
+                  () {
+                    const merge = require('lodash.merge')
+                    return merge({
+                      name: this.request.name
+                    }, {
+                      age: 10
+                    })
+                  }
   `)
     expect(await portIsUsed('0.0.0.0', 5000)).toEqual(true)
   })
@@ -80,12 +82,14 @@ describe('Test gRPC Server', () => {
                     data: [{name: 'thanh', age: 1}]
                   }
                   GetCustomers: !function |
-                    const merge = require('lodash.merge')
-                    return merge({
-                      name: request.name
-                    }, {
-                      age: 10
-                    })
+                    () {
+                      const merge = require('lodash.merge')
+                      return merge({
+                        name: this.request.name
+                      }, {
+                        age: 10
+                      })
+                    }
     `)
     expect(await portIsUsed('0.0.0.0', 5000)).toEqual(true)
   })

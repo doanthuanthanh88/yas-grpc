@@ -30,9 +30,11 @@ steps:
                 data: [{name: 'thanh', age: 1}]
               }
               GetCustomers: !function |
-                return {
-                  code: 10,
-                  data: [{name: 'thanh', age: 10}]
+                () {
+                  return {
+                    code: 10,
+                    data: [{name: 'thanh', age: 10}]
+                  }
                 }
   - Group:
       stepAsync: true
@@ -111,9 +113,11 @@ steps:
                 data: [{name: 'thanh', age: 1}]
               }
               GetCustomers: !function |
-                return {
-                  code: 10,
-                  data: [{name: 'thanh', age: 10}]
+                () {
+                  return {
+                    code: 10,
+                    data: [{name: 'thanh', age: 10}]
+                  }
                 }
   - Group:
       stepAsync: true

@@ -1,6 +1,8 @@
-- Doc/Guide/MD: 
+- Doc/Guide/MD:
+    title: Document
+    description: Describe all of elements in tool. (meaning, how to use...)
     logLevel: debug
-    includes: 
+    includes:
       - ../src
     excludes: []
     includePattern: ".+\\.ts$"

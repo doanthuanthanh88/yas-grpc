@@ -20,7 +20,7 @@ steps:
       timeout: 1s
       validate:
         - title: Response is valid
-          chai: \${expect($.response.code).to.equal(1)}
+          chai: ${expect($.response.code).to.equal(1)}
 
   - Fragment: ./Summary.yas.yaml
   - Fragment: ./Doc.yas.yaml
