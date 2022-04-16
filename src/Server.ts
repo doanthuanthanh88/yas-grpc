@@ -39,7 +39,7 @@ import { ProtoManager } from './utils/ProtoManager'
               data: [{name: 'thanh', age: 1}]
             }
             GetCustomers: !function |               # Handle code which handle request and response data
-              () {
+              () {                                  # Load global variables into function. [More](https://github.com/doanthuanthanh88/yaml-scene/wiki#user-content-!tags-!function)
                 // this.request: Request input
                 // this.metadata: Request metadata
                 // this.ctx: gRPC context

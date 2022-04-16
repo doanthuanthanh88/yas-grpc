@@ -8,14 +8,10 @@
     "paths": {
       "@app/*": [
         "./src/*"
-      ],
-      "@test/*": [
-        "./test/*"
       ]
     }
   },
   "include": [
-    "src",
-    "test"
+    "src"
   ]
 }
