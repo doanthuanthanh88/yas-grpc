@@ -1,6 +1,6 @@
 import { basename } from 'path';
 import { escape } from 'querystring';
-import { IFileAdapter } from 'yaml-scene/src/elements/File/adapter/IFileAdapter';
+import { IFileWriter } from 'yaml-scene/src/elements/File/writer/IFileWriter';
 import { Scenario } from 'yaml-scene/src/singleton/Scenario';
 import { Exporter as IExporter } from 'yaml-scene/src/utils/doc/Exporter';
 import Call from '../Call';
@@ -8,7 +8,7 @@ import MD from './MD';
 
 export class Exporter implements IExporter<Call> {
 
-  constructor(private writer: IFileAdapter, public md: MD) {
+  constructor(private writer: IFileWriter, public md: MD) {
   }
 
   getHashLink(...txts: string[]) {

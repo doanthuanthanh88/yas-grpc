@@ -2,7 +2,7 @@ import Call from "@app/Call"
 import chalk from "chalk"
 import merge from "lodash.merge"
 import { ElementProxy } from "yaml-scene/src/elements/ElementProxy"
-import { File } from "yaml-scene/src/elements/File/adapter/File"
+import { FileWriter } from "yaml-scene/src/elements/File/writer/FileWriter"
 import { IElement } from "yaml-scene/src/elements/IElement"
 import { Scenario } from "yaml-scene/src/singleton/Scenario"
 import { TraceError } from "yaml-scene/src/utils/error/TraceError"
@@ -58,7 +58,7 @@ export default class MD {
 
   async exec() {
     await TimeUtils.Delay('1s')
-    const exporter = new Exporter(new File(this.outFile), this)
+    const exporter = new Exporter(new FileWriter(this.outFile), this)
     await exporter.export(this._calls.sort((a, b) => a.title > b.title ? 1 : -1))
     this.proxy.logger.info(chalk.green(`API Document is saved to "${this.outFile}"`))
   }

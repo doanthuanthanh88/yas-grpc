@@ -1,6 +1,6 @@
 import { basename, join } from "path"
-import { File } from "yaml-scene/src/elements/File/adapter/File"
-import { Url } from "yaml-scene/src/elements/File/adapter/Url"
+import { UrlReader } from "yaml-scene/src/elements/File/reader/UrlReader"
+import { FileWriter } from "yaml-scene/src/elements/File/writer/FileWriter"
 import { Scenario } from "yaml-scene/src/singleton/Scenario"
 import { TraceError } from "yaml-scene/src/utils/error/TraceError"
 import { FileUtils } from "yaml-scene/src/utils/FileUtils"
@@ -39,9 +39,9 @@ export class ProtoManager {
 
     const tmpProtoDir = FileUtils.GetNewTempPath()
     FileUtils.MakeDirExisted(tmpProtoDir, 'dir')
-    const url = new Url(proto)
+    const url = new UrlReader(proto)
     const protoLocal = join(tmpProtoDir, basename(proto))
-    const file = new File(protoLocal)
+    const file = new FileWriter(protoLocal)
     await file.write(await url.read())
     this._protoURLCached.set(proto, protoLocal)
     return protoLocal
